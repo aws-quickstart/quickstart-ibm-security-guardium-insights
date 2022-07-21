@@ -1,14 +1,12 @@
-:quickstart-project-name: quickstart-repo-name
+:quickstart-project-name: quickstart-ibm-security-guardium-insights
 :quickstart-github-org: aws-quickstart
-:partner-product-name: Full Product Name
-:partner-product-short-name: Product Name
-:partner-company-name: Example Company Name, Ltd.
-:doc-month: January
+:partner-product-name: IBM Security Guardium Insights
+:partner-product-short-name: Guardium Insights
+:partner-company-name: IBM
+:doc-month: July
 :doc-year: 2022
-:partner-contributors: John Smith, {partner-company-name}
-// :other-contributors: Akua Mansa, Trek10
-:aws-contributors: Janine Singh, AWS IoT Partner team
-:aws-ia-contributors: Toni Jones, AWS Integration & Automation team
-:deployment_time: 15 minutes
+:partner-contributors: Joshua Klahn, Devan Shah, Manoj Nanjala, Divya Dinesan, Bhavana R, Samrika Singh, and Shinu Shaju, {partner-company-name}
+:aws-ia-contributors: Vinod Shukla, AWS Integration & Automation team
+:deployment_time: 2.5 hours
 :default_deployment_region: us-east-1
 // :private_repo:
