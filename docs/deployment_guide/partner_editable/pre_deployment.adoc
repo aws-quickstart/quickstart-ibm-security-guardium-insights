@@ -1,0 +1,54 @@
+//Include any predeployment steps here, such as signing up for a Marketplace AMI or making any changes to a partner account. If there are no predeployment steps, leave this file empty.
+
+== Predeployment steps
+
+=== Create an Amazon Simple Storage Service (Amazon S3) bucket
+
+You need to create an Amazon Simple Storage Service (Amazon S3) bucket in one of the AWS Regions. See AWS documentation on how to https://docs.aws.amazon.com/AmazonS3/latest/userguide/creating-bucket.html[Create your first Amazon Simple Storage Service (Amazon S3) bucket^].
+
+To upload files into your Amazon Simple Storage Service (Amazon S3) bucket, see https://docs.aws.amazon.com/AmazonS3/latest/userguide/uploading-an-object-bucket.html[Upload an object to your bucket^].
+
+This Amazon Simple Storage Service (Amazon S3) bucket is used for storing Red Hat OpenShift pull secret which is required for deploying {partner-product-name}. Additionally, it can also be used to store the optional TLS certificates and keys.
+
+=== Sign up for a Red Hat subscription
+
+This Quick Start requires a Red Hat subscription. During the deployment of the Quick Start, provide your https://cloud.redhat.com/openshift/install/aws/installer-provisioned[OpenShift Installer Provisioned Infrastructure pull secret^].
+
+If you don’t have a Red Hat account, you can create one on the Red Hat website. Note that registration may require a non-personal email address. To get a 60-day evaluation license for OpenShift, see the instructions in https://www.redhat.com/en/technologies/cloud-computing/openshift/try-it[Red Hat OpenShift Container Platform^].
+
+Upload the https://console.redhat.com/openshift/install/aws/installer-provisioned[OpenShift pull secret^] to your Amazon Simple Storage Service (Amazon S3) bucket. The Quick Start pulls this secret from your Amazon Simple Storage Service (Amazon S3) bucket location to provision the cluster.
+
+=== {partner-product-name} subscription
+
+* The Quick Start requires an entitlement key to access the {partner-product-name} content.
+  ** You can acquire your IBM entitlement key from https://myibm.ibm.com/products-services/containerlibrary[IBM Container Library^].
+  ** During stack creation you will need to pass the IBM entitlement key as the `RepositoryPassword` parameter.
+
+=== Domain name and TLS certificates
+
+Confirm that you have a domain name to use for OpenShift in Amazon Route 53. If you do not have a domain name, see the AWS documentation on https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/domain-register.html[Registering a new domain^].
+
+To create your own FQDN for the {partner-product-name}, add a DNS record to your hosted zone in Amazon Route 53.
+
+The following procedure explains how to create records using the Amazon Route 53 console.
+
+. Go to Amazon Route 53 console. https://us-east-1.console.aws.amazon.com/route53[Click here^].
+. Choose the hosted zone that corresponds to the domain name you will use when creating the stack.
+. Choose *Create Record*.
+. Enter a value for record name, this record will be used for the {partner-product-name} *HostName* parameter value when creating the stack.
++
+WARNING: Make sure that your FQDN must not be the same as the Red Hat OpenShift Container Platform cluster FQDN, or any other FQDN associated with the Red Hat OpenShift Container Platform cluster.
++
+. Confirm that the record type is `CNAME`.
+. For the value of the record, specify `console-openshift-console.apps.ClusterName.DomainName`, where *ClusterName* and *DomainName* are the respective input parameters used when creating the stack.
+. For the routing policy, pick `Simple routing`, and then choose *Create record*, as shown in <<_create_dns_record>>.
+
+[#_create_dns_record]
+.Create DNS record for FQDN for the {partner-product-name}
+[link=images/create-dns-record.png]
+image::../docs/deployment_guide/images/create-dns-record.png[DNS Record]
+
+{empty} +
+If you are using your own FQDN, you must provide an optional `TLS certificate` and `TLS key`, that use keys that are signed by a trusted certificate authority (CA). A custom TLS certificate is required, if the provided server keys are not signed by a trusted certificate authority. For more information, see the {partner-product-name} documentation on https://www.ibm.com/docs/en/guardium-insights/3.1.x?topic=planning-domain-name-tls-certificates[Domain Name and TLS Certificates^].
+
+Upload the TLS certificate, TLS key and custom TLS certificate to your Amazon Simple Storage Service (Amazon S3) bucket. The Quick Start pulls these certificates and keys from your Amazon Simple Storage Service (Amazon S3) bucket location for {partner-product-name} deployment.
