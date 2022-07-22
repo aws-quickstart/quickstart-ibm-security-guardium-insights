@@ -6,7 +6,11 @@ Metadata:
     Order: '2'
   cfn-lint:
     config:
-      ignore_checks: [E9007, W2001]
+      ignore_checks:
+        - W2001
+        - W9006
+        - E9101
+        - E9010
   AWSAMIRegionMap:
     Filters:
       RHEL79HVM:
@@ -57,7 +61,7 @@ Metadata:
         Parameters:
           - StorageType
           - NumberOfOCS
-          - OCSInstanceType       
+          - OCSInstanceType
       - Label:
           default: IBM Security Guardium Insights configuration
         Parameters:
@@ -65,7 +69,7 @@ Metadata:
           - LicenseType
           - GIVersion
           - AdminUsername
-          - AdminPassword       
+          - AdminPassword
           - Namespace
           - RepositoryPassword
           - HostName
@@ -302,7 +306,7 @@ Parameters:
       - 'I agree'
       - '-'
     ConstraintDescription: Agree to the license terms for IBM Security Guardium Insights.
-    Default: '-' 
+    Default: '-'
     Description: By accepting the license agreement you confirm that you read the license and accept the terms for IBM Security Guardium Insights.
     Type: String
   LicenseType:
@@ -384,7 +388,7 @@ Parameters:
     AllowedPattern: ^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$
     ConstraintDescription: The IBM Security Guardium Insights deployment logs bucket name can include numbers, lowercase letters, uppercase letters, and hyphens (-) and must be between 3 (min) and 63 (max) characters long. It cannot start or end with a hyphen (-).
     Description: >-
-      The name of the S3 bucket where IBM Security Guardium Insights deployment logs are to be exported. This S3 bucket will be created during the stack creation process. The deployment logs provide a record of the boot strap scripting actions and are useful for problem determination if the deployment fails in some way. 
+      The name of the S3 bucket where IBM Security Guardium Insights deployment logs are to be exported. This S3 bucket will be created during the stack creation process. The deployment logs provide a record of the boot strap scripting actions and are useful for problem determination if the deployment fails in some way.
       This name can include numbers, lowercase letters, uppercase letters, and hyphens, but do not start or end with a hyphen (-). Bucket names must be between 3 (min) and 63 (max) characters long.
     MaxLength: 63
     MinLength: 3
@@ -417,7 +421,7 @@ Rules:
     Assertions:
     - Assert:
         Fn::Not : [{"Fn::Equals" : [{"Ref" : "AdminUsername"}, "admin"]}]
-      AssertDescription: Value cannot be 'admin'. 
+      AssertDescription: Value cannot be 'admin'.
   LicenseAgreementRule:
     Assertions:
     - Assert:
@@ -569,7 +573,7 @@ Resources:
     Type: 'AWS::IAM::User'
     Properties:
       ManagedPolicyArns:
-        - arn:aws:iam::aws:policy/AdministratorAccess
+        - !Sub arn:${AWS::Partition}:iam::aws:policy/AdministratorAccess
   GIIAMUserAccessKey:
     Type: 'AWS::IAM::AccessKey'
     Properties:
@@ -597,8 +601,10 @@ Resources:
               Service: lambda.amazonaws.com
             Action: sts:AssumeRole
       ManagedPolicyArns:
-        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
-        - arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM
+        - !Sub arn:${AWS::Partition}:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+        - !Sub 'arn:${AWS::Partition}:iam::aws:policy/AmazonSSMManagedInstanceCore'
+        - !Sub 'arn:${AWS::Partition}:iam::aws:policy/AmazonSSMDirectoryServiceAccess'
+        - !Sub 'arn:${AWS::Partition}:iam::aws:policy/CloudWatchAgentServerPolicy'
       Path: /
       Policies:
         - PolicyName: lambda-cleanUpLambda
@@ -612,14 +618,23 @@ Resources:
                   - ssm:GetParameter
                   - ssm:DeleteParameter
                 Resource:
-                  - '*'
+                  - !Sub arn:${AWS::Partition}:ssm:${AWS::Region}:${AWS::AccountId}:parameter/*
               - Effect: Allow
                 Action:
                   - logs:FilterLogEvents
                 Resource:
-                  - '*' 
+                  - !Sub arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:*
   BootNodeIamRole:
     Type: AWS::IAM::Role
+    Metadata:
+      cfn-lint:
+        config:
+          ignore_checks:
+            - EIAMPolicyActionWildcard
+            - EIAMPolicyWildcardResource
+          ignore_reasons:
+            - EIAMPolicyActionWildcard: "Describe* actions permitted by design"
+            - EIAMPolicyWildcardResource: "Wildcard resource allowed by design"
     Properties:
       AssumeRolePolicyDocument:
         Version: "2012-10-17"
@@ -632,8 +647,10 @@ Resources:
           - "sts:AssumeRole"
       Path: "/"
       ManagedPolicyArns:
-        - arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM
-        - arn:aws:iam::aws:policy/AWSCloudFormationReadOnlyAccess
+        - !Sub 'arn:${AWS::Partition}:iam::aws:policy/AmazonSSMManagedInstanceCore'
+        - !Sub 'arn:${AWS::Partition}:iam::aws:policy/AmazonSSMDirectoryServiceAccess'
+        - !Sub 'arn:${AWS::Partition}:iam::aws:policy/CloudWatchAgentServerPolicy'
+        - !Sub 'arn:${AWS::Partition}:iam::aws:policy/AWSCloudFormationReadOnlyAccess'
       Policies:
       - PolicyName: bootnode-policy
         PolicyDocument:
@@ -657,17 +674,17 @@ Resources:
             Action:
             - "secretsmanager:GetSecretValue"
             - "secretsmanager:UpdateSecret"
-            Resource: 
+            Resource:
             - !Ref GISecret
             - !Ref AWSCredentialSecret
             - !Ref OpenShiftSecret
             - !Ref GIAdminSecret
           - Effect: "Allow"
             Action: "s3:ListBucket"
-            Resource: !Sub arn:aws:s3:::${GIDeploymentLogsBucketName}
+            Resource: !Sub arn:${AWS::Partition}:s3:::${GIDeploymentLogsBucketName}
           - Effect: "Allow"
             Action: "s3:PutObject"
-            Resource: !Sub arn:aws:s3:::${GIDeploymentLogsBucketName}/*
+            Resource: !Sub arn:${AWS::Partition}:s3:::${GIDeploymentLogsBucketName}/*
           - Effect: Allow
             Action:
             - ssm:SendCommand
@@ -712,7 +729,7 @@ Resources:
   AWSCredentialSecret:
     Type: "AWS::SecretsManager::Secret"
     Properties:
-      SecretString: !Sub 
+      SecretString: !Sub
         - '{"aws_secret_access_key":"${GIIAMUserAccessKey}, "aws_access_key_id":"${GIIAMUserSecret}"}'
         - {GIIAMUserAccessKey: !Ref GIIAMUserAccessKey, GIIAMUserSecret: !GetAtt [GIIAMUserAccessKey, SecretAccessKey]}
   BootnodeInstance:
@@ -734,16 +751,16 @@ Resources:
               content: !Sub |
                 [default]
                 region=${AWS::Region}
-                
+
             /root/.aws/credentials:
-              content: 
-                !Sub 
-                - |  
+              content:
+                !Sub
+                - |
                   [default]
                   aws_access_key_id=${GIIAMUserAccessKey}
                   aws_secret_access_key=${GIIAMUserSecret}
-                - 
-                  GIIAMUserAccessKey: !Ref GIIAMUserAccessKey 
+                -
+                  GIIAMUserAccessKey: !Ref GIIAMUserAccessKey
                   GIIAMUserSecret: !GetAtt [GIIAMUserAccessKey, SecretAccessKey]
     Properties:
       KeyName: !Ref 'KeyPairName'
@@ -767,7 +784,7 @@ Resources:
         SubnetId: !Ref PublicSubnet1ID
       UserData:
         Fn::Base64:
-          !Sub 
+          !Sub
           - |
             #!/bin/bash -x
             yum install -y git
@@ -775,7 +792,7 @@ Resources:
             yum install -y unzip
             yum install -y python3
             yum install -y jq
-            
+
             git clone https://github.com/aws-quickstart/quickstart-linux-utilities.git
             #file to set up system-wide environment variables
             touch /etc/profile.d/gi_install.sh
@@ -787,14 +804,14 @@ Resources:
             qs_bootstrap_pip || qs_err " pip bootstrap failed "
             qs_aws-cfn-bootstrap || qs_err " cfn bootstrap failed "
             pip install awscli  &> /var/log/userdata.awscli_install.log || qs_err " awscli install failed "
-            
+
             /usr/bin/cfn-init -v --stack ${AWS::StackName} --resource BootnodeInstance --configsets Required --region ${AWS::Region}
             # Signal the status from cfn-init
             /usr/bin/cfn-signal -e $? --stack ${AWS::StackName} --resource BootnodeInstance --region ${AWS::Region}
 
             echo -e "export GI_QS_S3URI=s3://${QSS3BucketName}/${QSS3KeyPrefix}\nexport INGRESS_KEYFILE_S3URI=${IngressKeyFile}\nexport INGRESS_CERTFILE_S3URI=${IngressCertFile}\nexport INGRESS_CAFILE_S3URI=${IngressCAFile}\nexport AWS_REGION=${AWS::Region}\nexport AWS_STACKID=${AWS::StackId}\nexport AWS_STACKNAME=${AWS::StackName}\nexport AMI_ID='${AMI_ID}'\nexport GI_SECRET='${GISecret}'\nexport OCP_SECRET='${OpenShiftSecret}'\nexport GI_ADMIN_SECRET='${GIAdminSecret}'\nexport GIInstallationCompletedURL='${GIInstallationCompletedHandle}'" >> /etc/profile.d/gi_install.sh
             source /etc/profile.d/gi_install.sh
-            
+
             mkdir -p /quickstart
             mkdir -p /ibm
             chmod -R 755 /ibm
@@ -836,7 +853,7 @@ Resources:
                     print(response)
                     current_status = "WAIT"
                     final_status = "READY"
-                    parameterName = stackname+"_CleanupStatus"     
+                    parameterName = stackname+"_CleanupStatus"
                     response = ssm.put_parameter(Name=parameterName,
                            Description="Waiting for CleanupStatus to be READY",
                            Value=current_status,
