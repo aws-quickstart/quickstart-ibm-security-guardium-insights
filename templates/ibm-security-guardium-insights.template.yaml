@@ -592,6 +592,13 @@ Resources:
       SecretString: '{"adminPassword":""}'
   LambdaExecutionRole:
     Type: AWS::IAM::Role
+    Metadata:
+      cfn-lint:
+        config:
+          ignore_checks:
+            - EIAMPolicyWildcardResource
+          ignore_reasons:
+            - EIAMPolicyWildcardResource: "Wildcard resource for SendCommand action allowed by design"
     Properties:
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
@@ -614,9 +621,7 @@ Resources:
               - Effect: Allow
                 Action:
                   - ssm:SendCommand
-                Resource:
-                  - !Sub arn:${AWS::Partition}:ssm:${AWS::Region}:${AWS::AccountId}:document/*
-                  - !Sub arn:${AWS::Partition}:ec2:${AWS::Region}:${AWS::AccountId}:instance/*
+                Resource: "*"
               - Effect: Allow
                 Action:
                   - ssm:PutParameter
