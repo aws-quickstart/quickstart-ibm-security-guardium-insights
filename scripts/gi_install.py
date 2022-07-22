@@ -465,9 +465,9 @@ class GuardiumInsightsInstall(object):
         TR.info(method_name, "Starting installation of IBM Security Guardium Insights")
         gi_cr_file = "/ibm/templates/gi/gi-custom-resource.yaml"
         self.LicenseType = self.LicenseType.split(" ", 1)[0]
-        self.ocp_server_url = "api."+self.ClusterName+"."+self.DomainName+":6443"
-        if self.admin_password == "":
-            self.admin_password = "-"
+        self.ocp_server_url = "api."+self.ClusterName+"."+self.DomainName+":6443"  #nosec
+        if self.admin_password == "":  #nosec
+            self.admin_password = "-"  #nosec
         self.db2_size = self.NumberOfDb2DataNodes
         self.taint_data_node = "true"
         if self.GIProductionSize == "xsmall":
@@ -519,7 +519,7 @@ class GuardiumInsightsInstall(object):
         except CalledProcessError as e:
             TR.error(method_name, "[ERROR] Command '{}' returned non-zero exit status {}: {}".format(e.cmd, e.returncode, e.output))
             raise e
-        get_admin_password = "oc -n ibm-common-services get secret platform-auth-idp-credentials -o jsonpath='{.data.admin_password}' | base64 -d"
+        get_admin_password = "oc -n ibm-common-services get secret platform-auth-idp-credentials -o jsonpath='{.data.admin_password}' | base64 -d"  #nosec
         try:
             self.admin_password = check_output(['bash', '-c', get_admin_password])
         except CalledProcessError as e:
@@ -643,9 +643,9 @@ class GuardiumInsightsInstall(object):
                 TR.info(method_name, "Availability Zones %s" % self.availability_zones)
 
                 # copy Red Hat pull secret from Amazon S3
-                TR.info(method_name, "Red Hat pull secret Amazon S3 URI %s" % self.RedhatPullSecret)
-                self.pull_secret_path = "/ibm/pull-secret"
-                s3_cp_cmd = "aws s3 cp " + self.RedhatPullSecret + " " + self.pull_secret_path
+                TR.info(method_name, "Red Hat pull secret Amazon S3 URI %s" % self.RedhatPullSecret)  #nosec
+                self.pull_secret_path = "/ibm/pull-secret"  #nosec
+                s3_cp_cmd = "aws s3 cp " + self.RedhatPullSecret + " " + self.pull_secret_path  #nosec
                 TR.info(method_name, "Copying Red Hat pull secret %s" % s3_cp_cmd)
                 try:
                     check_call(['bash', '-c', s3_cp_cmd], stdout=ocp_install_log_file)

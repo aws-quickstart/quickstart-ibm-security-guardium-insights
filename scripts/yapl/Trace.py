@@ -1,12 +1,12 @@
 
 ##################################################################################################
 #
-# File Name:    Trace.py 
-# Description:  This file contains a trace class developed for use with WebSphere Application 
+# File Name:    Trace.py
+# Description:  This file contains a trace class developed for use with WebSphere Application
 # Server wsadmin scripting.  However, there is nothing in this module implementation that
 # is specific to wsadmin or WebSphere Application Server.  The module code is straight Jython
 # and fully self contained, i.e., it relies on no other script modules.
-#  
+#
 # Author:	Peter Van Sickel pvs@us.ibm.com
 #
 # History:
@@ -16,18 +16,18 @@
 #        19 SEP 2009 - pvs - Pulling this together from previous work.
 #
 #        05 NOV 2009 - pvs
-#           Added the source line number as part of standard trace output.  
-#           Added a "module" parameter to the trace constructor.  
-#           The new approach to using the Trace class is to now have a 
+#           Added the source line number as part of standard trace output.
+#           Added a "module" parameter to the trace constructor.
+#           The new approach to using the Trace class is to now have a
 #           TR instance in each module instead of one global instance.
 #           Added entry and exit methods.  I didn't realize I hadn't defined
 #           an entry and exit method.
 #
 #        05 JAN 2011 - pvs
-#           Added additional levels and corresponding methods to conform to 
-#           java.util.logging.Level trace levels.  This makes this trace class 
+#           Added additional levels and corresponding methods to conform to
+#           java.util.logging.Level trace levels.  This makes this trace class
 #           intuitive for Java programmers.
-#           
+#
 #           Also introduced the _log() method to consolidate the actual trace
 #           emitting code into one method.
 #
@@ -36,13 +36,13 @@
 #           as a logFile parameter and using a setter method.
 #           The logFile parameter is a string that is a fully qualified path.
 #           The logFile is opened and the file descriptor stored in a class
-#           attribute named logFile so all trace for all instances will be sent 
+#           attribute named logFile so all trace for all instances will be sent
 #           to that file.
 #
 #        21 SEP 2011 - pvs
 #           Moved traceLevels out of the instance for each Trace and into
 #           the Trace class.  The traceLevels dictionary certainly doesn't
-#           need to be created for each Trace instance.  Modified the 
+#           need to be created for each Trace instance.  Modified the
 #           references to traceLevels accordingly.
 #
 #        16 JAN 2012 - pvs
@@ -64,39 +64,39 @@
 #           supported.
 #
 #        28 JAN 2012 - pvs
-#           Added the optional "exc" (exception) argument to severe() and 
+#           Added the optional "exc" (exception) argument to severe() and
 #           error() and as an optional argument to _log().  When exc is passed
-#           to _log() the exception message and a stack dump is included in the 
+#           to _log() the exception message and a stack dump is included in the
 #           trace string.  Including the stack dump for error() and severe()
 #           conforms to WAS tracing conventions.  See the Jython/Python doc
 #           on the traceback module.  This exception stack trace code is based
 #           on work from John Martinek.
 #
 #        16 FEB 2012 - pvs
-#           Moved the methods to open and close the trace file into the Trace 
-#           class. Now those methods are available in the Trace module namespace 
+#           Moved the methods to open and close the trace file into the Trace
+#           class. Now those methods are available in the Trace module namespace
 #           and the Trace class namespace.  This is intended to be a convenience
 #           modification only.  The trace file is still a class level object
 #           used by all instances.
 #
 #        26 APR 2012 - pvs
-#           Replaced Trace methods entry() with entering() and exit() with exiting().  
-#           The exit() method name uses a Jython/Python keyword.  The method names 
-#           entering() and exiting() are preferred for conformance with Java Logger.  
+#           Replaced Trace methods entry() with entering() and exit() with exiting().
+#           The exit() method name uses a Jython/Python keyword.  The method names
+#           entering() and exiting() are preferred for conformance with Java Logger.
 #           Also cleaned up some other indentation warnings and unused variable warn-
-#           ings. In _sourceFrame() method, replaced a deprecated use of sys.exc_traceback 
+#           ings. In _sourceFrame() method, replaced a deprecated use of sys.exc_traceback
 #           with a call to sys.exc_info()[2]
 #
 #        01 MAY 2012 - pvs
 #           Added the use of a lock in the Trace._log() method to synchronize the
 #           file IO statements (write, flush).  I discovered through use of Trace
-#           in notification handlers (which execute on separate threads) that 
+#           in notification handlers (which execute on separate threads) that
 #           things can get messed up in the trace log depending on when different
 #           threads jump in to do output.
 #
 #        06 SEP 2012 - pvs
-#           John Martinek added a thread ID to the trace string.  This becomes 
-#           useful for scenarios where multiple threads are emitting trace.  
+#           John Martinek added a thread ID to the trace string.  This becomes
+#           useful for scenarios where multiple threads are emitting trace.
 #           John had also made some code corrections to keep the error message
 #           with the stack dump for exception traces in multi-threaded trace
 #           scenarios.  The original code emitted the error message in one
@@ -105,19 +105,19 @@
 #           default.
 #
 #        07 - 14 SEP 2012 - pvs
-#           Made a number of changes to clean up the Trace implementation in 
+#           Made a number of changes to clean up the Trace implementation in
 #           preparation for releasing it as part of a dW article.  I simplified
 #           the API here and there.  Renamed the exception classes to follow
 #           a better naming convention that included the word Exception as the
 #           last word of the class name.
 #
-#           The  most important addition was to add the ability to control trace 
-#           using trace strings as is done with WebSphere Application Server. I 
-#           had been wanting to implement that sort of thing for a good while 
+#           The  most important addition was to add the ability to control trace
+#           using trace strings as is done with WebSphere Application Server. I
+#           had been wanting to implement that sort of thing for a good while
 #           and finally did it.
 #
-#           Modified the Trace constructor to require an "entity" name which 
-#           is the name of a module or class being traced.  An exception is 
+#           Modified the Trace constructor to require an "entity" name which
+#           is the name of a module or class being traced.  An exception is
 #           thrown if the entity name is empty or None.  The entity argument
 #           to the constructor is required.  This moved the Trace class from
 #           a focus on tracing modules to a focus on tracing modules and classes.
@@ -127,38 +127,38 @@
 #           each class defined in that module.
 #
 #           Modified the Trace constructor to remove the log file as a keyword
-#           parameter.  It turns out it is much more common and "natural" to open 
-#           a log file based on a command line input parameter and then use the 
-#           a Trace instance method or the Trace module method to open the log 
+#           parameter.  It turns out it is much more common and "natural" to open
+#           a log file based on a command line input parameter and then use the
+#           a Trace instance method or the Trace module method to open the log
 #           file for writing (truncate existing) or appending.
 #
 #           Modified the Trace constructor to take only an integer constant for
 #           the level keyword argument.  The level keyword argument also defaults
 #           to Level.INFO.  Removed support in the constructor for a string form
 #           of a trace level.  (Using the Trace constructor to set the trace level
-#           for a given entity is not recommended except in "quick-and-dirty" 
+#           for a given entity is not recommended except in "quick-and-dirty"
 #           scenarios.  See elsewhere in the comments for the recommended approach.)
 #
 #      19 APR 2013
-#           PVS - Added an option varable to the class that controls whether stack 
+#           PVS - Added an option varable to the class that controls whether stack
 #           traces are provided from "top-to-bottom" (TTB) or "bottom to top" (BTT).
 #           The default is TTB which is a Java style stack trace. The BTT option is
 #           Python/Jython style of stack trace.  There is a method that is used to
 #           create the stack representation from TTB as well as a method to create
 #           the stack BTT.
 #  NOTES:
-#     In the trace methods, integer constants as defined in the Level class are used to 
+#     In the trace methods, integer constants as defined in the Level class are used to
 #     avoid the overhead of using the dictionary with the named trace levels in it.
-#  
-#  Trace levels are ordered from "lower" to "higher" with lower trace levels being 
-#  considered more important to emit such as for errors, warnings and "info" and higher 
+#
+#  Trace levels are ordered from "lower" to "higher" with lower trace levels being
+#  considered more important to emit such as for errors, warnings and "info" and higher
 #  trace levels reserved for debugging, such as config, fine, finer, finest.
-# 
-#  If no log file has been defined, then all trace levels are emitted to stdout which 
+#
+#  If no log file has been defined, then all trace levels are emitted to stdout which
 #  usually means it shows up in the command window where the script was launched.
 #  (Obviously, it could be redirected to a file.)
 #
-#  If a log file has been configured, then all trace goes to the log file.  And only 
+#  If a log file has been configured, then all trace goes to the log file.  And only
 #  trace at INFO level and "lower" goes to stdout, i.e., error, warning and info.
 #
 # The format of the trace line is:
@@ -166,7 +166,7 @@
 #   where T is a one character event type
 #   <entityname> is the module or class being traced (see more on this below)
 #
-# NOTE: <entityname> does not get truncated as in WAS trace.  We opted to emit the 
+# NOTE: <entityname> does not get truncated as in WAS trace.  We opted to emit the
 # entire name to make it easy to determine which module or class is emitting the
 # the trace.
 #
@@ -175,10 +175,10 @@
 #
 #     from was.admin.utilities.Trace import Trace,Level
 #
-#  Note: The import statement shown above assumes the package and library directory 
-#  structure of a library of modules that includes the Trace module.  Your import 
-#  statement should reflect your specific runtime and library structure.  If the 
-#  Trace module is in the same directory as the module using it, the import will 
+#  Note: The import statement shown above assumes the package and library directory
+#  structure of a library of modules that includes the Trace module.  Your import
+#  statement should reflect your specific runtime and library structure.  If the
+#  Trace module is in the same directory as the module using it, the import will
 #  look like:
 #
 #     from Trace import Trace,Level
@@ -187,7 +187,7 @@
 #  Note: An entity name (module or class name) is required.
 #        level must be one of the constants defined by the Level class.
 #
-#  When creating a Trace instance for a module, initialize a Trace instance for the 
+#  When creating a Trace instance for a module, initialize a Trace instance for the
 #  module.
 #
 #     TR = Trace(__name__)
@@ -209,13 +209,13 @@
 #     #endClass
 #
 #  For a class level variable the Trace instance will be referenced using the class name
-#  as a qualifier.  For an instance level variable the Trace instance will be referenced 
+#  as a qualifier.  For an instance level variable the Trace instance will be referenced
 #  using "self" as the qualifier.
 #
 #  Using the module name (__name__) as part of the entity name argument for the Trace
-#  constructor helps greatly to avoid name collisions when each trace instance registers 
-#  itself in the "tracedEntities" class variable that is ultimately used to enable trace 
-#  levels using trace strings.  In short, the "entity name" (module or class name) for each 
+#  constructor helps greatly to avoid name collisions when each trace instance registers
+#  itself in the "tracedEntities" class variable that is ultimately used to enable trace
+#  levels using trace strings.  In short, the "entity name" (module or class name) for each
 #  Trace instance needs to be unique.  (Jython packages also help to ensure module and class
 #  name uniqueness.)
 #
@@ -227,26 +227,26 @@
 #  <Thoughts_on_how_to_define_Trace_instances>
 #
 #  If there is only one traced class definition in a given module, then a module level
-#  Trace instance is likely sufficient.  However, if you define multiple classes in 
-#  a module, and more than one class needs to use Trace, then it is recommended that a 
+#  Trace instance is likely sufficient.  However, if you define multiple classes in
+#  a module, and more than one class needs to use Trace, then it is recommended that a
 #  separate Trace instance be created for each class.
 #
-#  It is recommended that each "major" class (that would use Trace) be defined in its 
-#  own file and thus always use module level instances of Trace.  This makes it easy to 
+#  It is recommended that each "major" class (that would use Trace) be defined in its
+#  own file and thus always use module level instances of Trace.  This makes it easy to
 #  reference the Trace instance variable without a qualifier when invoking a Trace method,
-#  e.g., TR.info(). Minor supporting classes that might be in the same file don't usually 
-#  get traced because they are simple.  If a supporting class is or becomes complex enough 
-#  that Trace is needed then that class likely deserves its own module.  Refactor the 
-#  original module into multiple modules, one for each "complex" class and continue to 
+#  e.g., TR.info(). Minor supporting classes that might be in the same file don't usually
+#  get traced because they are simple.  If a supporting class is or becomes complex enough
+#  that Trace is needed then that class likely deserves its own module.  Refactor the
+#  original module into multiple modules, one for each "complex" class and continue to
 #  use a module level Trace instance for each class.
 #
-#  If you want to define a Trace instance for a class, recommend using a class level 
-#  Trace instance over an instance level, as it seems unnecessary to incur the overhead 
+#  If you want to define a Trace instance for a class, recommend using a class level
+#  Trace instance over an instance level, as it seems unnecessary to incur the overhead
 #  of instantiating a Trace instance for each instance of a class.
 #
-#  If the class name is annoyingly long for descriptive purposes, either refactor the name 
+#  If the class name is annoyingly long for descriptive purposes, either refactor the name
 #  into something shorter (that hopefully does not sacrifice its descriptiveness), or assign
-#  the class to a variable with a short name, e.g., 
+#  the class to a variable with a short name, e.g.,
 #      thisClass = MyClassWithADescriptiveName
 #  Or even shorter:
 #      tC = MyClassWithADescriptiveName
@@ -254,7 +254,7 @@
 #      thisClass.TR.info(...)
 #  Or
 #      tC.TR.info(...)
-#  
+#
 #  </Thoughts_on_how_to_define_Trace_instances>
 #
 #  In the bodies of methods where you want trace, define a variable named
@@ -264,7 +264,7 @@
 #      methodName = "myMethod"
 #
 #      TR.entering(methodName)
-#      ... 
+#      ...
 #      TR.info(methodName,"My trace message.")
 #      ...
 #      TR.exiting(methodName)
@@ -289,14 +289,14 @@
 #         TR.openTraceLog(logPath)
 #
 # NOTE: The logFile is a Trace class level variable and thus all instances of Trace
-# write to the same log file.  You can open a log file with instance methods or 
-# module methods.  Usually the instance methods are the most convenient. Opening a 
-# log file is something you want to control based on command line arguments to a top 
+# write to the same log file.  You can open a log file with instance methods or
+# module methods.  Usually the instance methods are the most convenient. Opening a
+# log file is something you want to control based on command line arguments to a top
 # level "main" class for your script, for example, using -logfile <file_path> as a
 # command line parameter.
 #
-# There are a couple of different ways to set the trace level for a given Trace 
-# instance. The Trace class constructor has a keyword parameter named "level" that 
+# There are a couple of different ways to set the trace level for a given Trace
+# instance. The Trace class constructor has a keyword parameter named "level" that
 # can be used when the module trace class is instantiated.  The trace class also
 # has a method to set trace to a specific level:
 #
@@ -310,7 +310,7 @@
 # You can set the trace level in other modules (for example from a top level
 # script), by importing that module and then using the trace global variable
 # in that module.  For example, assume TR is the global variable that implements
-# the Trace instance in a module named ServerCluster. An import of 
+# the Trace instance in a module named ServerCluster. An import of
 # the ServerCluster module is included in your script that is using it:
 #
 #       import was.admin.clusters.ServerCluster as ServerCluster
@@ -319,36 +319,36 @@
 #
 #       ServerCluster.TR.setTraceLevel(Level.FINEST)
 #
-# The above methods are relatively awkward and not recommended except in "quick and 
-# dirty" scenarios.  The above methods tend to require code modifications to get a 
-# different trace level or to enable trace in a different module that you decide you 
-# need to trace. In other words the above methods don't readily support a dynamic 
-# method of enabling trace across a wide range of modules that may be in use for a 
+# The above methods are relatively awkward and not recommended except in "quick and
+# dirty" scenarios.  The above methods tend to require code modifications to get a
+# different trace level or to enable trace in a different module that you decide you
+# need to trace. In other words the above methods don't readily support a dynamic
+# method of enabling trace across a wide range of modules that may be in use for a
 # given script.  The above methods were all that was available until the Trace
-# class was enhanced to support the use of a trace specification string, which is 
+# class was enhanced to support the use of a trace specification string, which is
 # described next.
 #
-# The recommended approach for enabling trace for a collection of modules is to use 
-# a command line argument to your main script that has a trace string specification 
-# as its value.  Then use the module or Trace instance method configureTrace(traceString) 
-# to set trace levels based on the given traceString.  So for example your main program 
+# The recommended approach for enabling trace for a collection of modules is to use
+# a command line argument to your main script that has a trace string specification
+# as its value.  Then use the module or Trace instance method configureTrace(traceString)
+# to set trace levels based on the given traceString.  So for example your main program
 # can support a
-#     -trace <trace_string> 
+#     -trace <trace_string>
 # command line argument. Your command line processing code will parse through
-# the "argv" array (sys.argv) and if it encounters the -trace keyword then it 
-# takes the next element of argv to be the trace string.  Assume the value of 
-# the trace string is stored in a variable named traceString.  Then traceString 
-# can be passed into either the Trace instance instantiated for your main 
-# module, e.g., 
+# the "argv" array (sys.argv) and if it encounters the -trace keyword then it
+# takes the next element of argv to be the trace string.  Assume the value of
+# the trace string is stored in a variable named traceString.  Then traceString
+# can be passed into either the Trace instance instantiated for your main
+# module, e.g.,
 #      TR.configureTrace(traceString)
 # or the module level Trace method could be invoked assuming an import
 # of the trace module as follows:
 #      import Trace as TraceModule
 #      ...
-#      TraceModule.configureTrace(traceString)      
+#      TraceModule.configureTrace(traceString)
 #
 # See the module comments below near the definition of traceSpec and traceString
-# in the Trace class for specifics on the syntax of the trace string.  In short 
+# in the Trace class for specifics on the syntax of the trace string.  In short
 # the trace string syntax is the same as that used by WebSphere Application Server
 # without the "state" part.  (The state part is the "=enabled" or "=disabled" which
 # fell out of favor along about version 7 of WAS.)
@@ -356,13 +356,13 @@
 ##################################################################################################
 #
 # List of module level methods:
-#    openTraceLog(logPath)   - opens for write, the trace log file with the 
+#    openTraceLog(logPath)   - opens for write, the trace log file with the
 #                              given path; truncates the existing file
-#    appendTraceLog(logPath) - opens for append, the trace log file with the 
+#    appendTraceLog(logPath) - opens for append, the trace log file with the
 #                              given path
 #    closeTraceLog()         - closes the trace log file
 #
-#    parseTraceString(traceString) - parse the given trace string into a list 
+#    parseTraceString(traceString) - parse the given trace string into a list
 #                                    of TraceSpecification instances
 #                                    This method is not likely to be commonly
 #                                    used. This method is used by other module
@@ -374,11 +374,11 @@
 #
 #   getTraceSpec()            - Get the value of Trace.traceSpec.
 #
-#   configureTrace(traceString) - Use this method to configure trace levels in all 
+#   configureTrace(traceString) - Use this method to configure trace levels in all
 #                                 registered Trace instances based on the given traceString.
 #                                 Assuming the usage pattern of instantiating a Trace instance
-#                                 as a global in a module, the module Trace instances are 
-#                                 instantiated and the module is "registered" when a module is 
+#                                 as a global in a module, the module Trace instances are
+#                                 instantiated and the module is "registered" when a module is
 #                                 imported. Trace levels will be set based on the given traceString
 #                                 for all registered trace instances at the time configureTrace()
 #                                 is invoked. Trace instances that are instantiated at some later
@@ -386,7 +386,7 @@
 #                                 instantiation.
 #
 # NOTE: The above trace log methods are implemented as Trace class methods as
-# well.  It is usually convenient to use the instance level methods for opening 
+# well.  It is usually convenient to use the instance level methods for opening
 # and closing the trace log file.
 #
 ##################################################################################################
@@ -408,7 +408,7 @@ import datetime
 import time
 import thread
 
-# Lock is needed for ensuring thread safe file IO when 
+# Lock is needed for ensuring thread safe file IO when
 # using a log file.
 from threading import Lock
 
@@ -442,7 +442,7 @@ class EntityNameException(Exception):
 
 class TraceLevelException(Exception):
   """
-    TraceLevelException is raised in methods in the Trace class when a value or name of a 
+    TraceLevelException is raised in methods in the Trace class when a value or name of a
     trace level is encountered that is not recognized.
   """
   pass
@@ -450,7 +450,7 @@ class TraceLevelException(Exception):
 
 class TraceSpecificationException(Exception):
   """
-    TraceSpecificationException is raised if a given trace string is not of the  
+    TraceSpecificationException is raised if a given trace string is not of the
     correct syntax or otherwise is not recognized as a valid trace specification string.
   """
   pass
@@ -506,14 +506,14 @@ class Level:
 #
 class TraceSpecification:
   """
-    TraceSpecification is used to implement a specific trace specification made up of an 
-    entity "pattern" and a trace level.     
+    TraceSpecification is used to implement a specific trace specification made up of an
+    entity "pattern" and a trace level.
   """
-  
+
   def __init__(self,pattern,level):
     if (not pattern):
       raise TraceSpecificationException("A trace specification must not be an empty string.")
-    
+
     # pattern is retained for display
     self.pattern = pattern
     self.level = self._coerceLevel(level)
@@ -523,23 +523,23 @@ class TraceSpecification:
     self.compiledRegex = re.compile(self.patternRegex)
   #endDef
 
-   
+
   def __str__(self):
     return '<TraceSpecification pattern="%s" level="%s"/>' % (self.pattern,self.level)
   #endDef
 
-  
+
   def __repr__(self):
     return '<TraceSpecification patternRegex="%s" level="%s"/>' % (self.patternRegex,self.level)
   #endDef
 
-  
+
   def getPattern(self):
     """Return the pattern for this TraceSpecification instance."""
     return self.pattern
   #endDef
 
-  
+
   def getLevel(self):
     """Return the trace level for this TraceSpecification instance."""
     return self.level
@@ -548,10 +548,10 @@ class TraceSpecification:
 
   def _coerceLevel(self,level):
     """
-      Return an integer representation based on the given string representation. 
+      Return an integer representation based on the given string representation.
       The Trace.traceLevels hash table is used to do the translation.  The integer
       returned is one of the levels from the Level class.
-  
+
       The incoming level is intended to be an integer or a Jython string.
     """
     if (type(level) == type(0)):
@@ -574,29 +574,29 @@ class TraceSpecification:
     #endIf
     return result
   #endDef
-  
+
 
   # The _patternToRegEx() takes an entity pattern string and converts it to a regular
-  # expression string. The entity pattern may have explicit dots in it that are part 
-  # of a Jython package name as well as a wildcard character at the end to indicate 
+  # expression string. The entity pattern may have explicit dots in it that are part
+  # of a Jython package name as well as a wildcard character at the end to indicate
   # a collection of modules or classes in a given package.
-  # The given pattern is transformed to the corresponding valid regular expression 
-  # string, e.g.,  
-  #   "was.admin.*" -> "was\.admin\..*?". 
-  # 
+  # The given pattern is transformed to the corresponding valid regular expression
+  # string, e.g.,
+  #   "was.admin.*" -> "was\.admin\..*?".
+  #
   # The wildcard character is * and it can only terminate the trace string.
   # A trace string may have only a wildcard character, e.g., *=finer
   #
-  # It is assumed the caller has checked that the trace string is not empty. 
+  # It is assumed the caller has checked that the trace string is not empty.
   #
-  # NOTE: For the simple case where the entity pattern string doesn't have a 
-  # wildcard character in it, the result is merely the entity pattern string  
-  # with a $ character pasted onto the end.  This forces exact matches of the 
-  # pattern with a target string. For example re.match("foo","foobar") succeeds 
-  # where re.match("foo$","foobar") does not.  
+  # NOTE: For the simple case where the entity pattern string doesn't have a
+  # wildcard character in it, the result is merely the entity pattern string
+  # with a $ character pasted onto the end.  This forces exact matches of the
+  # pattern with a target string. For example re.match("foo","foobar") succeeds
+  # where re.match("foo$","foobar") does not.
   #
-  # See the Python doc on regular expressions for more RE info.  The use of .*? is 
-  # explained there.  Putting the ? after .* keeps the RE from being "greedy" and 
+  # See the Python doc on regular expressions for more RE info.  The use of .*? is
+  # explained there.  Putting the ? after .* keeps the RE from being "greedy" and
   # matching more than intended.  The ? makes the RE "nongreedy".
   #
   #
@@ -612,7 +612,7 @@ class TraceSpecification:
       if (regex.find(".") >= 0):
         regex = regex.replace(".", "\.")
       #endIf
-      
+
       asteriskIndex = regex.find("*")
       if (asteriskIndex < 0):
         # no wildcard in pattern
@@ -633,44 +633,44 @@ class TraceSpecification:
 #
 # Trace class
 #
-# WARNING: All tracing methods must go through _log() and they can't call any intermediary 
+# WARNING: All tracing methods must go through _log() and they can't call any intermediary
 # methods, otherwise the stack frame sequence gets out of wack and the line number will be
 # incorrect in the log message.
 #
 # When a trace event is emitted one part of the emitted string just after the time stamp
-# and thread ID is an 1 character string that represents the event type.  Each tracing 
+# and thread ID is an 1 character string that represents the event type.  Each tracing
 # method includes its event type in the call to _log().
 #
 class Trace:
   """
-    The Trace class, and its supporting classes, implements a WebSphere Application Server  
+    The Trace class, and its supporting classes, implements a WebSphere Application Server
     style trace logger.
   """
   # Constructor signature: __init__(self,entity,level=Level.INFO)
   # Note: An entity name (module or class name) is required.
   #       level must be one of the constants defined by the Level class.
-  # 
+  #
   # The tracedEntities dictionary keeps track of the modules that "register" themselves.
   # The tracedModule dictionary is keyed by a module name, i.e., the value of __name__
   # for a module when a Trace() instance is created for the module.
   # The value of each entry in tracedEntities is the instance of Trace for the module.
   tracedEntities = {}
-    
-  # The trace specification is used to control trace for all registered 
+
+  # The trace specification is used to control trace for all registered
   # modules.  The traceSpec is a list of TraceSpecification instances.
   #
   traceSpec = None
-  
+
   # The traceSpec is set using a trace string that has a format similar to what is
-  # used for WAS trace strings.  The traceString holds the actual full trace string 
+  # used for WAS trace strings.  The traceString holds the actual full trace string
   # for reference purposes.  The traceString gets processed to create the traceSpec.
   #
-  # For details on the syntax of the trace string, see the WAS InfoCenter section titled, 
+  # For details on the syntax of the trace string, see the WAS InfoCenter section titled,
   #       "Tracing and logging configuration"
   # The one thing not used from WAS trace string syntax is the "state", i.e., the trace
   # string doesn't need the enabled, disabled value, just a trace level.
   #
-  # The BNF for a trace string looks like: 
+  # The BNF for a trace string looks like:
   #     <trace_string> = <module_trace_string>[:<module_trace_string>]*
   #     <module_trace_string> = <module_pattern>=<level>
   #     <module_pattern> = <module_name>
@@ -679,14 +679,14 @@ class Trace:
   #                        | *
   #     <module_package> = <name>[.<name>]*
   #     <level> is one of the trace levels
-  # 
+  #
   # Use a colon to separate multiple trace strings. An asterisk may be used to
   # terminate a trace string to enable trace for all the modules in a given family
-  # as per the Jython package name, e.g., was.admin.*=all sets the trace level to 
+  # as per the Jython package name, e.g., was.admin.*=all sets the trace level to
   # "all" for all modules in the was.admin package and any of its sub-packages.
   # Another example of a trace string is:
   #     was.admin.clusters.ServerCluster=finer:was.admin.clusters.ClusterMember=fine
-  # A wild-card could be used to set trace to fine for all modules in the 
+  # A wild-card could be used to set trace to fine for all modules in the
   # was.admin.clusters package:  was.admin.clusters.*=fine
   #
   # NOTE: The default value of traceString is not actually processed.
@@ -695,15 +695,15 @@ class Trace:
   traceFile = None
 
   traceFileLock = Lock()
-  
-  traceNames = ['none', 'off', 'error', 'severe', 'warn', 'warning', 
+
+  traceNames = ['none', 'off', 'error', 'severe', 'warn', 'warning',
                 'info', 'config', 'fine', 'finer', 'finest', 'debug', 'all']
-  
-  traceLevels = {'none': Level.NONE, 'off': Level.OFF, 
-                        'error': Level.ERROR, 'severe': Level.SEVERE, 
-                        'warn': Level.WARN, 'warning': Level.WARNING, 
-                        'info': Level.INFO, 
-                        'config': Level.CONFIG, 
+
+  traceLevels = {'none': Level.NONE, 'off': Level.OFF,
+                        'error': Level.ERROR, 'severe': Level.SEVERE,
+                        'warn': Level.WARN, 'warning': Level.WARNING,
+                        'info': Level.INFO,
+                        'config': Level.CONFIG,
                         'fine': Level.FINE,
                         'finer': Level.FINER,
                         'finest': Level.FINEST,
@@ -725,7 +725,7 @@ class Trace:
   FullPath = "FullPath"
   SourceFileStyle = NameOnly
   SourceFileStyles = [NameOnly, FullPath]
-    
+
   def openTraceLog(self,logPath):
     if (Trace.traceFile != None):
       Trace.traceFile.close()
@@ -741,7 +741,7 @@ class Trace:
     Trace.traceFile = open(logPath,"a")
   #endDef
 
-  
+
   def closeTraceLog(self):
     if (Trace.traceFile != None):
       Trace.traceFile.close()
@@ -753,10 +753,10 @@ class Trace:
     """
       Return an integer representation from the Level class for the given
       string representation of a trace level.
-       
-      The traceLevels hash table is used to do the translation.    
-       
-      The incoming level is intended to be a Jython string.  If it is not 
+
+      The traceLevels hash table is used to do the translation.
+
+      The incoming level is intended to be a Jython string.  If it is not
       a string then it is returned as is.
     """
     result = level
@@ -771,14 +771,14 @@ class Trace:
     #endIf
     return result
   #endDef
-  
+
 
   def _isTraceLevel(self,level):
     """
-      Return "true" if the given trace level is a valid string or integer representation of a 
+      Return "true" if the given trace level is a valid string or integer representation of a
       trace level.
     """
-       
+
     if (type(level) == type(0)):
       result = level >= Level.NONE and level <= Level.FINEST
     elif (type(level) == type("") or type(level) == type(u"")):
@@ -792,12 +792,12 @@ class Trace:
     #endIf
     return result
   #endDef
-  
-  
+
+
   def configureThisTrace(self):
     """
       Set the trace level for this instance of the trace class based on the Trace class traceSpec.
-      If there is no trace spec that has a module pattern that matches this trace instance 
+      If there is no trace spec that has a module pattern that matches this trace instance
       module name, then the trace level is not modified.
     """
     for spec in Trace.traceSpec:
@@ -808,27 +808,27 @@ class Trace:
     #endFor
   #endDef
 
-  
+
   def __init__(self,entity,level=Level.INFO):
     """
-      The Trace class has two instance variables that get initialized in the 
+      The Trace class has two instance variables that get initialized in the
       constructor:
         entityName - (required) the name of the module or class being traced
-        traceLevel - (optional) gets set to Level.INFO if optional keyword "level" 
+        traceLevel - (optional) gets set to Level.INFO if optional keyword "level"
                      parameter is not set on the Trace instantiation.
-                     The level parameter must be an integer that is one of the 
+                     The level parameter must be an integer that is one of the
                      constants in the Level class.
     """
     if (not entity):
       raise EntityNameException("A module or class name is required when instantiating a Trace instance.")
     #endIf
-    
+
     if (type(level) != type(0) or level < Level.NONE or level > Level.FINEST):
       raise TraceLevelException("Invalid trace level: %s. Trace level must be an integer constant as defined by the Level class." % level)
     #endIf
-    
+
     self.traceLevel = level
-    
+
     # Register this trace instance
     Trace.tracedEntities[entity] = self
     self.entityName = entity
@@ -837,21 +837,21 @@ class Trace:
     # trace level based on the traceSpec if there is a match on this Trace instance entity name.
     if (Trace.traceSpec):
       self.configureThisTrace()
-    #endIf  
+    #endIf
   #endDef
 
 
   # The _exceptionStack*() methods are based on a similar method that
-  # John Martinek originally developed.  The Jython traceback module is 
-  # used to get the method stack list, then appends each stack frame onto 
-  # a new line.  It also gets the exception stack and does the same thing.  
-  # The parts of the stack that belong to the Trace class are left out of 
+  # John Martinek originally developed.  The Jython traceback module is
+  # used to get the method stack list, then appends each stack frame onto
+  # a new line.  It also gets the exception stack and does the same thing.
+  # The parts of the stack that belong to the Trace class are left out of
   # the stack trace.
   #
-  # For the TTB variation, the exception stack string is built by "pushing" 
-  # each stack frame line onto the stack string. This causes the output to 
-  # show up with the top of the stack as the first line in the output. (This 
-  # is similar to how Java exception stacks are printed, however it is the 
+  # For the TTB variation, the exception stack string is built by "pushing"
+  # each stack frame line onto the stack string. This causes the output to
+  # show up with the top of the stack as the first line in the output. (This
+  # is similar to how Java exception stacks are printed, however it is the
   # reverse of how Python exception stacks are printed.)
   #
   # The "frame stack" shows the frames executed from the beginning of "main"
@@ -865,27 +865,27 @@ class Trace:
   # and the function name is either "error" or "severe" then execution
   # breaks out of the loop that is generating the stack dump string
   # to avoid showing the Trace module functions in the stack dump.
-  # 
+  #
   # Trace.error() and Trace.severe() are the only two Trace methods that provide
   # a stack trace.
-  # 
+  #
   def _exceptionStackTTB(self,methodName,exc,depth=10):
     """
       Return a string useable for output to stdout or a log file that provides a representation
       of the "exception stack" and the "frame stack" from "top to bottm" (TTB).
-      The "exception stack" captures the code tree from main to where the exception was raised and 
+      The "exception stack" captures the code tree from main to where the exception was raised and
       is usually the most interesting part of the stack.  The "frame stack" captures the code
-      from the point to where the exception was caught. 
-      
+      from the point to where the exception was caught.
+
       Displaying the stack from top to bottom in an output log or stdout is the style in which
       Java displays the stack.
-      
+
       There is another method named _exceptionStackBTT() that can be used to create a string that
       represents the execution stack from bottom to top, which is the style that Jython/Python
       uses by default.
     """
     stack = ""
-    # Reconstruct the call stack from where the trace of the exception was initiated by invoking 
+    # Reconstruct the call stack from where the trace of the exception was initiated by invoking
     # Trace.error() or Trace.severe().
     stackList = traceback.extract_stack()
     try:
@@ -940,30 +940,30 @@ class Trace:
       exc_type,exc_value = sys.exc_info()[:2]
       stack = "\tException getting exception stack. Type: %s, Value: %s\n%s" % (exc_type,exc_value,stack)
     #endTry
-    
+
     # At the very top - put the exception string
     stack = "\t%s\n%s" % (exc,stack)
-    
-    return stack	
+
+    return stack
   #endDef
 
-  
+
   def _exceptionStackBTT(self,methodName,exc,depth=10):
     """
       Return a string useable for output to stdout or a log file that provides a representation
       of the "exception stack" and the "frame stack" from "bottom to top" (BTT).
-      The "exception stack" captures the code tree from main to where the exception was raised and 
+      The "exception stack" captures the code tree from main to where the exception was raised and
       is usually the most interesting part of the stack.  The "frame stack" captures the code
-      from the point to where the exception was caught. 
-      
+      from the point to where the exception was caught.
+
       Displaying the stack from bottom to top in an output log or stdout is the style in which
       Jython/Python displays the stack by default.
-      
+
       There is another method named _exceptionStackTTB() that can be used to create a string that
       represents the execution stack from top to bottom, which is the style that Java uses.
     """
     stack = ""
-    # Reconstruct the call stack from where the trace of the exception was initiated by invoking 
+    # Reconstruct the call stack from where the trace of the exception was initiated by invoking
     # Trace.error() or Trace.severe().
     stackList = traceback.extract_stack()
     try:
@@ -986,7 +986,7 @@ class Trace:
       exc_type,exc_value = sys.exc_info()[:2]
       stack = "%s\n\tException getting frame stack. Type: %s, Value: %s" % (stack,exc_type,exc_value)
     #endTry
-    
+
     try:
       stack = "%s\tException stack (most recent call last):\n" % stack
       tb = sys.exc_info()[2]
@@ -999,7 +999,7 @@ class Trace:
         #endIf
         if (text == None):
           stack = "%s\t%s(%s) [%s]\n" % (stack,sourcefile,line,function)
-        else:        
+        else:
           stack = "%s\t%s(%s) [%s] - %s\n" % (stack,sourcefile,line,function,text)
         #endIf
       #endFor
@@ -1011,25 +1011,25 @@ class Trace:
 
     # At the very end - put the exception string
     stack = "%s\t%s" % (stack,exc)
-    
-    return stack  
+
+    return stack
   #endDef
 
-  
-  # The _log() method is the heart of the tracing mechanism. All of the public trace 
+
+  # The _log() method is the heart of the tracing mechanism. All of the public trace
   # methods invoke _log().
-  # 
-  # If exc is not None, then the exception message and stack is included in the trace 
+  #
+  # If exc is not None, then the exception message and stack is included in the trace
   # message.
   #
-  # If a log file has been configured, then all trace goes to the log file.  Any trace 
+  # If a log file has been configured, then all trace goes to the log file.  Any trace
   # with eventType Info or "lower" also goes to stdout.
   #
   # The format of the trace line is:
   # [<datetimestamp>] <threadid> T <modulename>(<linenumber>) <methodname> : <message>
   #   where T is a one character event type
   #
-  # NOTE: <modulename> does not get truncated as in WAS trace.  We opted to emit the 
+  # NOTE: <modulename> does not get truncated as in WAS trace.  We opted to emit the
   # entire module name to make it easy to determine which script file is emitting the
   # the trace.
   #
@@ -1040,18 +1040,18 @@ class Trace:
   #
   def _log(self,methodName,eventType,msg,exc=None):
     """
-      Emit the trace message to stdout and optionally to a trace file when a trace file 
+      Emit the trace message to stdout and optionally to a trace file when a trace file
       has been defined.
-       
-      All public Trace methods that emit trace messages go through _log() to actually 
-      emit the trace in order to correctly unwind the call stack as well as to emit trace 
+
+      All public Trace methods that emit trace messages go through _log() to actually
+      emit the trace in order to correctly unwind the call stack as well as to emit trace
       in a thread safe manor.
-    """    
+    """
     stackDump = None
     threadId = ("%x" % thread.get_ident()).rjust(12).replace(" ","0")
     traceString = "%s %s %s %s" % (self._getTimeStamp(),threadId,eventType,self.entityName)
     traceString = "%s(%s) %s" % (traceString,self._sourceLineNumber(),methodName)
-    
+
     if (exc):
       # Get stack dump now to keep it with msg text
       if (Trace.StackTraceStyle == Trace.TopToBottom):
@@ -1062,7 +1062,7 @@ class Trace:
         raise TraceConfigurationException("'%s', is not a valid stack trace style. Expected one of %s" % (Trace.StackTraceStyle,Trace.StackTraceStyles))
       #endIf
     #endIf
-    
+
     # If a logFile was provided then send all trace to trace log
     if (Trace.traceFile):
       # file IO is not thread safe
@@ -1079,18 +1079,18 @@ class Trace:
         Trace.traceFileLock.release()
       #endTry
     #endIf
-    
+
     if (not Trace.traceFile or eventType in ["S", "E", "W", "I"]):
       # Send severe, error, warning and info trace to stdout
       if (stackDump):
-        print "%s : %s\n%s" % (traceString, msg, stackDump)
+        print("%s : %s\n%s" % (traceString, msg, stackDump))
       else:
-        print "%s : %s" % (traceString, msg)
+        print("%s : %s" % (traceString, msg))
       #endIf
     #endIf
   #endDef
-  
-  
+
+
   def isLoggable(self,level):
     if (type(level) == type(0)):
       if (self._isTraceLevel(level)):
@@ -1116,7 +1116,7 @@ class Trace:
     #endIf
   #endDef
 
-  
+
   def exiting(self,methodName):
     if (self.traceLevel >= Level.FINE):
       self._log(methodName,"<","Exit")
@@ -1133,7 +1133,7 @@ class Trace:
   #endDef
 
 
-  # Synonym for severe() for backward compatibility with 
+  # Synonym for severe() for backward compatibility with
   # original Trace class.
   # The event type for error is "E".
   def error(self,methodName,msg,exc=None):
@@ -1142,7 +1142,7 @@ class Trace:
     #endIf
   #endDef
 
-  
+
   def warn(self,methodName,msg):
     if (self.traceLevel > Level.SEVERE):
       self._log(methodName,"W",msg)
@@ -1157,8 +1157,8 @@ class Trace:
     #endIf
   #endDef
 
-    
-  def info(self,methodName,msg):    
+
+  def info(self,methodName,msg):
     if (self.traceLevel > Level.WARN):
       self._log(methodName,"I",msg)
     #endIf
@@ -1171,21 +1171,21 @@ class Trace:
     #endIf
   #endDef
 
-  
+
   def fine(self,methodName,msg):
     if (self.traceLevel > Level.CONFIG):
       self._log(methodName,"1",msg)
     #endIf
   #endDef
 
-  
+
   def finer(self,methodName,msg):
     if (self.traceLevel > Level.FINE):
       self._log(methodName,"2",msg)
     #endIf
   #endDef
 
-  
+
   def finest(self,methodName,msg):
     if (self.traceLevel > Level.FINER):
       self._log(methodName,"3",msg)
@@ -1199,14 +1199,14 @@ class Trace:
       self._log(methodName,"3",msg)
     #endIf
   #endDef
-  
-  
+
+
   def setTraceLevel (self,level):
     """
       Set the trace level for this instance of Trace to the given level.
-    
+
       The given level may be a Jython string that is a valid trace level as determined
-      by the _coerceLevel() method.  Or the given level may be an integer constant that 
+      by the _coerceLevel() method.  Or the given level may be an integer constant that
       is one of the levels defined in the Level class.
     """
     if (type(level) == type("") or type(level) == type(u"")):
@@ -1225,21 +1225,21 @@ class Trace:
       # Odd case where level is unexpected type
       raise TraceLevelException("Trace level must be either a string or an integer.  Use levels defined by the Level class.")
     #endIf
-  #endDef  
-
-  def getTraceLevel(self): 
-    return self.traceLevel 
   #endDef
-  
-    
+
+  def getTraceLevel(self):
+    return self.traceLevel
+  #endDef
+
+
   def _getTimeStamp(self):
     now = datetime.datetime.now()
     return "[%s %s]" % (now.strftime("%y/%m/%d %H:%M:%S.%f"),TimeZoneName)
   #endDef
-  
+
   # The stack frame has a method that returns the line number
   # The _sourceFrame() method steps back through the stack frames
-  # to the frame that called the trace method, which is referred  
+  # to the frame that called the trace method, which is referred
   # to as the "source" frame.  The trace method calls _log() which
   # calls _sourceLineNumber() so to get back to the source frame
   # you have to walk 4 frames back.
@@ -1255,22 +1255,22 @@ class Trace:
         return exc_traceback.tb_frame.f_back.f_back.f_back.f_back
     #endTry
   #endDef
-  
+
   def _sourceLineNumber(self):
     lineno = self._sourceFrame().f_lineno
     return str(lineno)
   #endDef
-  
+
   def configureTrace(self,traceString):
     """
-      The configureTrace() method defined for the Trace class is a convenience wrapper 
+      The configureTrace() method defined for the Trace class is a convenience wrapper
       around the configureTrace() method defined for the Trace module. It is often the
       case that a Trace class instance is readily available to use for "global" trace
       configuration.
     """
     configureTrace(traceString)
   #endDef
-  
+
 #endClass
 
 ##################################################################################################
@@ -1301,7 +1301,7 @@ def closeTraceLog():
 def parseTraceString(traceString):
   """
     Return a list of TraceSpecification instances that represent a parsing of the given trace string.
-    The returned list holds a TraceSpecifification instance for each trace specification in the given 
+    The returned list holds a TraceSpecifification instance for each trace specification in the given
     trace string.
   """
   result = []
@@ -1316,7 +1316,7 @@ def parseTraceString(traceString):
     if (len(traceParts) != 2):
       raise TraceSpecificationException("Encountered an invalid trace string: %s  A trace string looks like <module_pattern>=<level>." % trace)
     #endIf
-    
+
     modulePattern = traceParts[0]
     level = traceParts[1]
     result.append(TraceSpecification(modulePattern,level))
@@ -1329,11 +1329,11 @@ def setTraceSpec(traceString):
   """
     Given a trace specification string, set the module traceSpec used by all instances of Trace.
   """
-  
+
   if (not traceString):
     raise Exception("The traceString argument must be a non-empty string.")
   #endIf
-  
+
   Trace.traceSpec = parseTraceString(traceString)
   Trace.traceString = traceString
 #endDef
@@ -1350,11 +1350,11 @@ def getTraceSpec():
 def configureTrace(traceString):
   """
     Set the global trace specification based on the given trace string.
-    Loop through all registered modules and set their trace class trace level based on 
-    the given trace string if the module name matches one of the module patterns in the 
+    Loop through all registered modules and set their trace class trace level based on
+    the given trace string if the module name matches one of the module patterns in the
     given trace string.
   """
-  
+
   setTraceSpec(traceString)
   registeredModules = Trace.tracedEntities.keys()
   for module in registeredModules:
