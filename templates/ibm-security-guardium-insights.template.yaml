@@ -614,6 +614,11 @@ Resources:
               - Effect: Allow
                 Action:
                   - ssm:SendCommand
+                Resource:
+                  - !Sub arn:${AWS::Partition}:ssm:${AWS::Region}:${AWS::AccountId}:document/*
+                  - !Sub arn:${AWS::Partition}:ec2:${AWS::Region}:${AWS::AccountId}:instance/*
+              - Effect: Allow
+                Action:
                   - ssm:PutParameter
                   - ssm:GetParameter
                   - ssm:DeleteParameter
