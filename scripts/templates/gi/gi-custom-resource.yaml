@@ -1,0 +1,119 @@
+apiVersion: gi.ds.isc.ibm.com/v1
+kind: GuardiumInsights
+metadata:
+  name: ${namespace}
+  namespace: ${namespace}
+spec:
+  version: ${version}
+  license:
+    accept: true
+    licenseType: ${license-type}
+  connections:
+    insightsEnv:
+      FEATURE_STAP_STREAMING: "false"
+  guardiumInsightsGlobal:
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+          - matchExpressions:
+            - key: kubernetes.io/arch
+              operator: In
+              values:
+              - amd64
+        preferredDuringSchedulingIgnoredDuringExecution:
+        - weight: 100
+          preference:
+            matchExpressions:
+            - key: icp4data
+              operator: NotIn
+              values:
+              - database-db2wh
+        preferredDuringSchedulingIgnoredDuringExecution:
+        - weight: 100
+          preference:
+            matchExpressions:
+            - key: cluster.ocs.openshift.io/openshift-storage
+              operator: DoesNotExist
+    dev: "false"
+    licenseAccept: true
+    image:
+      insightsPullSecret: ibm-entitlement-key
+      repository: cp.icr.io/cp/ibm-guardium-insights
+    size: values-${production-size}
+    insights:
+      ingress:
+        hostName: ${host-name}
+        domainName: ${domain-name}
+      ics:
+        namespace: ibm-common-services
+        registry: common-service
+    storageClassName: ${storage-class-rwx}
+  dependency-db2:
+    db2:
+      resources:
+        requests:
+          memory: "${db2-memory}"
+        limits:
+          memory: "${db2-memory}"
+      storage:
+      - name: meta
+        spec:
+          storageClassName: ${storage-class-rwx}
+          accessModes:
+          - ReadWriteMany
+        type: create
+      - name: data
+        spec:
+          storageClassName: ${storage-class-rwo}
+          accessModes:
+          - ReadWriteOnce
+        type: template
+      - name: activelogs
+        spec:
+          storageClassName: ${storage-class-rwo}
+          accessModes:
+          - ReadWriteOnce
+        type: template
+  dependency-kafka:
+    kafka:
+      storage:
+        type: persistent-claim
+        class: ${storage-class-rwo}
+    zookeeper:
+      storage:
+        type: persistent-claim
+        class: ${storage-class-rwo}
+  dependency-mongodb:
+    storage:
+    - metadata:
+        name: data-volume
+      spec:
+        storageClassName: ${storage-class-rwo}
+    - metadata:
+        name: logs-volume
+      spec:
+        storageClassName: ${storage-class-rwo}
+  mini-snif:
+    persistentVolumesClaims:
+      mini-snif-shared:
+        storageClassName: "${storage-class-rwx}"
+  universal-connector-manager:
+    persistentVolumesClaims:
+      universal-connector-manager-shared:
+        storageClassName: "${storage-class-rwx}"
+  settings-datasources:
+    persistentVolumesClaims:
+      settings-datasources:
+        storageClassName: ${storage-class-rwx}
+  ticketing:
+    persistentVolumesClaims:
+      ticketing-keystore:
+        storageClassName: "${storage-class-rwx}"
+  dependency-redis:
+    persistence:
+      enabled: true
+      storageClass: ${storage-class-rwo}
+  ssh-service:
+    serviceAnnotations:
+      service.beta.kubernetes.io/aws-load-balancer-internal: "false"
