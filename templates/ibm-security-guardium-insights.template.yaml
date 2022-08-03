@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: 'Template for IBM Security Guardium Insights deployment into an existing VPC. **WARNING** This template creates EC2 instances and related resources. You will be billed for the AWS resources used if you create a stack from this template. (qs-1t8abe2qp)'
+Description: 'Template for IBM Security Guardium Insights deployment into an existing VPC. *WARNING* This template creates EC2 instances and related resources. You will be billed for the AWS resources used if you create a stack from this template. (qs-1t8abe2qp)'
 Metadata:
   QuickStartDocumentation:
     EntrypointName: 'Launch IBM Security Guardium Insights into an existing VPC on AWS'
