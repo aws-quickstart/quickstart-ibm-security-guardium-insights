@@ -585,11 +585,11 @@ Resources:
   OpenShiftSecret:
     Type: "AWS::SecretsManager::Secret"
     Properties:
-      SecretString: '{"ocpPassword":""}'
+      SecretString: '{"ocpPassword": null}'
   GIAdminSecret:
     Type: "AWS::SecretsManager::Secret"
     Properties:
-      SecretString: '{"adminPassword":""}'
+      SecretString: '{"adminPassword": null}'
   LambdaExecutionRole:
     Type: AWS::IAM::Role
     Metadata:
@@ -735,6 +735,9 @@ Resources:
         FromPort: 22
         ToPort: 22
         CidrIp: !Ref BootNodeAccessCIDR
+      SecurityGroupEgress:
+      - IpProtocol: "-1"
+        CidrIp: 0.0.0.0/0
       VpcId: !Ref VPCID
   AWSCredentialSecret:
     Type: "AWS::SecretsManager::Secret"
