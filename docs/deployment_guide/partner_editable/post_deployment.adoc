@@ -1,3 +1,64 @@
 // Include any postdeployment steps here, such as steps necessary to test that the deployment was successful. If there are no postdeployment steps, leave this file empty.
 
+[#_cfn_outputs]
+.{partner-product-name} outputs after successful deployment
+[link=images/cfn-outputs.png]
+image::../docs/deployment_guide/images/cfn-outputs.png[{partner-product-name} deployment outputs]
+
 == Postdeployment steps
+
+=== Login into {partner-product-name}
+
+To access the {partner-product-name} UI, navigate to the *GIWebClientURL* in the Outputs tab of the root stack. See <<_cfn_outputs>>.
+
+Log in to {partner-product-name} web console by using the default authentication method by providing IBM Cloud Pak® foundational services *AdminUsername* and *AdminPassword* that you provided while creating the stack. 
+
+NOTE: Users can provide their own custom *AdminUsername* and *AdminPassword* while lauching the stack. If no password is provided, the default IBM Cloud Pak® foundational services password generated during the deployment can be retrieved from *GIAdminSecret* resource.
+
+[#_gi_login_page]
+.Login page for {partner-product-short-name} web client
+[link=images/gi-login-page.png]
+image::../docs/deployment_guide/images/gi-login-page.png[.Login page for {partner-product-name} web client,width=1920,height=auto]
+
+The *AdminPassword* can be retrived from the *GIAdminSecret* from the Resources tab of {partner-product-name} stack.
+
+.GIAdminSecret resource
+[link=images/gi-secret-resource.png]
+image::../docs/deployment_guide/images/gi-secret-resource.png[GI secret resource]
+
+You can retrieve the secret value by choosing Retrieve secret value, as shown in the following figure. Use this secret value as the password for accessing {partner-product-name} web console.
+
+.Retrieve secret value for console password
+[link=images/retrieve-secret.png]
+image::../docs/deployment_guide/images/retrieve-secret.png[Retrieve secret value for console password]
+
+{empty} +
+Upon logging in to the {partner-product-name} web client URL, the {partner-product-name} welcome page opens, as shown in <<_gi_welcome_page>>.
+
+[#_gi_welcome_page]
+.Welcome page for {partner-product-short-name} web client
+[link=images/gi-welcome-page.png]
+image::../docs/deployment_guide/images/gi-welcome-page.png[GI welcome page,width=1922,height=auto]
+
+=== Manage your cluster using the Red Hat OpenShift web console
+
+To access the Red Hat Openshift Container Platform web console, navigate to the *OpenshiftWebConsoleURL* in the *Outputs* tab of the root stack. See, <<_cfn_outputs>>.
+
+Log in to the Openshift web console by using use the default OpenShift administrator *kubeadmin*. The password can be obtained from the *OpenShiftSecret* resource from the `Resources` tab of {partner-product-name} stack.
+
+.OpenShift secret resource
+[link=images/oc-secret-resource.png]
+image::../docs/deployment_guide/images/oc-secret-resource.png[OpenShift secret resource]
+
+{empty} +
+You can retrieve the secret value by choosing *Retrieve secret value*, as shown in the following figure. Use this secret value as OpenShift console administrative password.
+
+.Retrieve secret value for console password
+[link=images/retrieve-secret.png]
+image::../docs/deployment_guide/images/retrieve-secret.png[Retrieve secret value for console password]
+
+=== Accessing Red Hat OpenShift cluster from the command-line interface
+
+. In your Red Hat OpenShift web console, choose your profile name and then select *Copy Login*.
+. Choose *Display Token*, copy the oc login command, and paste the command into your command line.
+

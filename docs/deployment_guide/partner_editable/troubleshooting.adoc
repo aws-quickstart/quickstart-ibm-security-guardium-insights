@@ -1,4 +1,11 @@
 // Add any unique troubleshooting steps here.
+Make notes of the the log files that are generated in the output S3 bucket: 
+
+* ocp_install.log - STDOUT of the deployment of Red Hat OpenShift Container Platform using IPI.
+* gi_install.log - STDOUT of the deployment of installing IBM Cloud Pak foundational services and IBM Security Guardium Insights including the validation of the installation.
+* bootstrap.log - STDOUT of the high overview of the events during deployment of Red Hat OpenShift Container Platform and IBM Security Guardium Insights.  
+
+For troubleshooting {partner-product-name} related issues, refer to the https://www.ibm.com/docs/en/guardium-insights/3.1.x?topic=problems-techniques-troubleshooting[{partner-product-name} Troubleshooting and Support Guide^].
 
 For troubleshooting common Quick Start issues, refer to the https://fwd.aws/rA69w?[AWS Quick Start General Information Guide^] and https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/troubleshooting.html[Troubleshooting CloudFormation^].
 
