@@ -163,26 +163,26 @@ Parameters:
     Type: List<AWS::EC2::AvailabilityZone::Name>
   VPCCIDR:
     AllowedPattern: ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/(1[6-9]|2[0-8]))$
-    ConstraintDescription: CIDR block parameter must be in the form x.x.x.x/16-28.
+    ConstraintDescription: CIDR block notation must follow the format "x.x.x.x/16–28".
     Default: '10.0.0.0/16'
     Description: CIDR block for the VPC.
     Type: String
   PrivateSubnet1CIDR:
     AllowedPattern: ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/(1[6-9]|2[0-8]))$
-    ConstraintDescription: CIDR block parameter must be in the form x.x.x.x/16-28.
+    ConstraintDescription: CIDR block notation must follow the format "x.x.x.x/16–28".
     Default: '10.0.0.0/19'
     Description: CIDR block for the private subnet located in Availability Zone 1.
     Type: String
   PublicSubnet1CIDR:
     AllowedPattern: ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/(1[6-9]|2[0-8]))$
-    ConstraintDescription: CIDR block parameter must be in the form x.x.x.x/16-28.
+    ConstraintDescription: CIDR block notation must follow the format "x.x.x.x/16–28".
     Default: '10.0.128.0/20'
     Description: CIDR block for the public subnet located in Availability Zone 1.
     Type: String
   BootNodeAccessCIDR:
     AllowedPattern: ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/([0-9]|[1-2][0-9]|3[0-2]))$
-    ConstraintDescription: CIDR block parameter must be in the form x.x.x.x/x.
-    Description:  CIDR IP range that is permitted to access the boot node instance. Set this value to a trusted IP range. The value "0.0.0.0/0" permits access to all IP addresses. Additional values can be added post-deployment from the Amazon EC2 console.
+    ConstraintDescription: CIDR block notation must follow the format "x.x.x.x/x".
+    Description:  CIDR IP range that is permitted to access the boot node instance. Set this value to a trusted IP range. The value "0.0.0.0/0" permits access to all IP addresses. Additional values can be added from the Amazon EC2 console after deployment.
     Type: String
   DomainName:
     AllowedPattern: ^(\S+)$
@@ -190,7 +190,7 @@ Parameters:
     Description: Amazon Route 53 base domain configured for your Red Hat OpenShift Container Platform cluster. Must be a valid base domain (for example, "example.com").
     Type: String
   KeyPairName:
-    Description: Name of an existing public/private key pair, which allows you to securely connect to your instance after it launches. If you do not have one in this AWS Region, create it before continuing.
+    Description: Name of an existing public/private key pair, which allows you to securely connect to your instance after it launches. If you do not have a key pair in this AWS Region, create one before continuing.
     Type: AWS::EC2::KeyPair::KeyName
   GIProductionSize:
     AllowedValues:
@@ -206,7 +206,7 @@ Parameters:
     AllowedValues:
       - 3
     Default: 3
-    Description: Desired capacity for the Red Hat OpenShift Container Platform master node instances.
+    Description: Desired number of control plane node instances.
     Type: Number
   NumberOfGINodes:
     AllowedValues:
@@ -216,8 +216,7 @@ Parameters:
       - 5
     Default: 3
     Description: >-
-      Desired capacity for the Guardium Insights node instances. Choose 2 if the IBM Security Guardium Insights production size is extra small. Choose 3 if the IBM Security Guardium Insights production size is small. Choose 4 if the IBM Security Guardium Insights production size is medium. Choose 5 if the IBM Security Guardium Insights production size is large.
-      Note: If the number of compute node instances exceeds your Red Hat entitlement limits or AWS instance limits, the stack will fail. Choose a number that is within your limits.
+      Desired number of Guardium Insights node instances. Choose "2" if the Guardium Insights production size is extra small. Choose "3" if the production size is small. Choose "4" if the production size is medium. Choose "5" if the production size is large. Note: If the number of compute node instances exceeds your Red Hat entitlement limits or AWS instance limits, the stack will fail. Choose a number that is within your limits.
     Type: Number
   NumberOfDb2DataNodes:
     AllowedValues:
@@ -226,13 +225,13 @@ Parameters:
       - 3
     Default: 2
     Description: >-
-      Desired capacity for the Db2 data node instances. Choose 1 if the IBM Security Guardium Insights production size is extra small. Choose 2 if the IBM Security Guardium Insights production size is small. Choose 3 if the IBM Security Guardium Insights production size is medium or large. Note: If the number of compute node instances exceeds your Red Hat entitlement limits or AWS instance limits, the stack will fail. Choose a number that is within your limits.
+      Desired number of IBM Db2 data node instances. Choose "1" if the Guardium Insights production size is extra small. Choose "2" if the production size is small. Choose "3" if the production size is medium or large. Note: If the number of compute node instances exceeds your Red Hat entitlement limits or AWS instance limits, the stack will fail. Choose a number that is within your limits.
     Type: Number
   MasterInstanceType:
     AllowedValues:
       - m5.2xlarge
     Default: m5.2xlarge
-    Description: EC2 instance type for the Red Hat OpenShift Container Platform master node instances. Instance must have 8 cores CPU, 16 GB RAM, and 120 GB storage.
+    Description: EC2 instance type for the Red Hat OpenShift Container Platform control plane node instances. Instance must have 8 cores CPU, 16 GB RAM, and 120 GB storage.
     Type: String
   GINodeInstanceType:
     AllowedValues:
@@ -240,7 +239,7 @@ Parameters:
       - m5.8xlarge
     Default: m5.4xlarge
     Description: >-
-      EC2 instance type for the Guardium Insights node instances. Choose "m5.4xlarge" (16 cores CPU, 64 GB RAM, 120 GB storage) if the IBM Security Guardium Insights production size is small, medium or large. Choose "m5.8xlarge" (32 cores CPU, 128 GB RAM, 120 GB storage) if the IBM Security Guardium Insights production size is extra small.
+      EC2 instance type for the Guardium Insights node instances. Choose "m5.4xlarge" (16 cores CPU, 64 GB RAM, 120 GB storage) if the Guardium Insights production size is small, medium or large. Choose "m5.8xlarge" (32 cores CPU, 128 GB RAM, 120 GB storage) if the production size is extra small.
     Type: String
   Db2DataNodeInstanceType:
     AllowedValues:
@@ -249,13 +248,12 @@ Parameters:
       - m5.16xlarge
     Default: m5.4xlarge
     Description: >-
-      EC2 instance type for the Db2 data node instances. Choose "m5.4xlarge" (16 cores CPU, 64 GB RAM, 120 GB storage) if the IBM Security Guardium Insights production size is small.
-      Choose "m5.8xlarge" (32 cores CPU, 128 GB RAM, 120 GB storage) if the IBM Security Guardium Insights production size is extra small or medium. Choose "m5.16xlarge" (64 cores CPU, 256 GB RAM, 120 GB storage) if the IBM Security Guardium Insights production size is large.
+      EC2 instance type for the Db2 data node instances. Choose "m5.4xlarge" (16 cores CPU, 64 GB RAM, 120 GB storage) if the Guardium Insights production size is small. Choose "m5.8xlarge" (32 cores CPU, 128 GB RAM, 120 GB storage) if the production size is extra small or medium. Choose "m5.16xlarge" (64 cores CPU, 256 GB RAM, 120 GB storage) if the production size is large.
     Type: String
   ClusterName:
     AllowedPattern: ^[0-9a-z-.]*$
     ConstraintDescription: Must contain valid cluster name. The name must start with a letter, can contain letters, numbers, periods (.), and hyphen (-).
-    Description: Red Hat OpenShift Container Platform cluster name. The name must start with a letter, can contain letters, numbers, periods (.), and hyphen (-). Use a name that is unique across Regions.
+    Description: Red Hat OpenShift Container Platform cluster name. The name must start with a letter and can contain letters, numbers, periods (.), and hyphens (-). Use a name that is unique across Regions.
     Type: String
   RedhatPullSecret:
     AllowedPattern: ^s3:\/\/+[0-9a-z-.\/]*$
@@ -274,13 +272,12 @@ Parameters:
       - 5
     Default: 3
     Description: >-
-      Desired capacity for the OpenShift container storage node instances. Choose "3" if the IBM Security Guardium Insights production size is extra small or small.
-      Choose "5" if the IBM Security Guardium Insights production size is medium or large.
+      Desired capacity for OpenShift container storage node instances. Choose "3" for an extra small or small Guardium Insights production deployment. Choose "5" for a medium or large production deployment.
     Type: Number
   OCSInstanceType:
     AllowedValues:
       - m5.4xlarge
-    ConstraintDescription: Must contain a valid instance type. Instance must have 8 cores CPU, 16 GB RAM and 120 GB storage.
+    ConstraintDescription: Must contain a valid instance type. Instance must have 8 cores CPU, 16 GB RAM, and 120 GB storage.
     Default: m5.4xlarge
     Description: EC2 instance type for the OpenShift Container Storage instances.
     Type: String
@@ -288,9 +285,9 @@ Parameters:
     AllowedValues:
       - 'I agree'
       - '-'
-    ConstraintDescription: Agree to the license terms for IBM Security Guardium Insights.
+    ConstraintDescription: You must agree to the license terms for IBM Security Guardium Insights to continue.
     Default: '-'
-    Description: Choose "I agree" to confirm that you have read license and accept the terms for IBM Security Guardium Insights.
+    Description: Choose "I agree" to confirm that you have read the IBM Security Guardium Insights license and accept the terms.
     Type: String
   LicenseType:
     AllowedValues:
@@ -308,21 +305,21 @@ Parameters:
     Description: Version of IBM Security Guardium Insights to be deployed.
     Type: String
   Namespace:
-    ConstraintDescription: IBM Security Guardium Insights namespace must between 3-10 characters in length.
-    Description: OpenShift project where IBM Security Guardium Insights will be deployed.
+    ConstraintDescription: IBM Security Guardium Insights namespace must be 3-10 characters in length.
+    Description: OpenShift project where IBM Security Guardium Insights is deployed.
     MaxLength: 10
     MinLength: 3
     Type: String
   RepositoryPassword:
     AllowedPattern: ^(\S+)$
-    ConstraintDescription: Must contain password to access IBM Entitled Registry.
+    ConstraintDescription: A IBM Entitled Registry password is required.
     Description: IBM Entitled Registry password.
     Type: String
     NoEcho: 'true'
   AdminUsername:
     Default: 'gi-admin'
-    ConstraintDescription: The administrator username must between 3-32 characters in length.
-    Description: User with administrator privileges in IBM Security Guardium Insights. The administrator username must between 3–32 characters in length.
+    ConstraintDescription: The administrator username must be 3-32 characters in length.
+    Description: User with administrator privileges in IBM Security Guardium Insights. The administrator username must be 3–32 characters in length.
     MaxLength: 32
     MinLength: 3
     Type: String
