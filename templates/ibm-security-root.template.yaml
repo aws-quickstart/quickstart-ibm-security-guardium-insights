@@ -355,13 +355,13 @@ Parameters:
     AllowedValues:
       - 'gp2'
     Default: 'gp2'
-    Description: Defined storage classes read-write-only (RWO) defined for using IBM Security Guardium Insights.
+    Description: Read-write-only (RWO) storage class for using IBM Security Guardium Insights.
     Type: String
   StorageClassRWX:
     AllowedValues:
       - 'ocs-storagecluster-cephfs'
     Default: 'ocs-storagecluster-cephfs'
-    Description: Storage classes read-write-many (RWX) defined for using IBM Security Guardium Insights.
+    Description: Read-write-many (RWX) storage class for using IBM Security Guardium Insights.
     Type: String
   GIDeploymentLogsBucketName:
     AllowedPattern: ^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$
@@ -563,3 +563,6 @@ Outputs:
   GIWebClientURL:
     Description: IBM Security Guardium Insights platform URL.
     Value: !GetAtt 'GuardiumInsightsStack.Outputs.GIWebClientURL'
+  Postdeployment:
+    Description: See the deployment guide for postdeployment steps.
+    Value: https://fwd.aws/4zzGq?

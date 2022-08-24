@@ -364,45 +364,43 @@ Parameters:
     AllowedValues:
       - 'gp2'
     Default: 'gp2'
-    Description: Storage classes read-write-only (RWO) defined for using IBM Security Guardium Insights.
+    Description: Read-write-only (RWO) storage class for using IBM Security Guardium Insights.
     Type: String
   StorageClassRWX:
     AllowedValues:
       - 'ocs-storagecluster-cephfs'
     Default: 'ocs-storagecluster-cephfs'
-    Description: Storage classes read-write-many (RWX) defined for using IBM Security Guardium Insights.
+    Description: Read-write-many (RWX) storage class for using IBM Security Guardium Insights.
     Type: String
   GIDeploymentLogsBucketName:
     AllowedPattern: ^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$
-    ConstraintDescription: The IBM Security Guardium Insights deployment logs bucket name can include numbers, lowercase letters, uppercase letters, and hyphens (-) and must be between 3 (min) and 63 (max) characters long. It cannot start or end with a hyphen (-).
+    ConstraintDescription: S3 bucket name must be 3–63 characters. It can include numbers, lowercase letters, uppercase letters, and hyphens (-), but cannot start or end with a hyphen (-).
     Description: >-
-      The name of the S3 bucket where IBM Security Guardium Insights deployment logs are to be exported. This S3 bucket will be created during the stack creation process. The deployment logs provide a record of the boot strap scripting actions and are useful for problem determination if the deployment fails in some way.
-      This name can include numbers, lowercase letters, uppercase letters, and hyphens, but do not start or end with a hyphen (-). Bucket names must be between 3 (min) and 63 (max) characters long.
+      Name of the S3 bucket for IBM Security Guardium Insights deployment logs. This S3 bucket is created with the stack. Deployment logs contain a record of bootstrap scripting actions and are useful for troubleshooting failed deployments. S3 bucket name must be 3–63 characters. It can include numbers, lowercase letters, uppercase letters, and hyphens (-), but cannot start or end with a hyphen (-).
     MaxLength: 63
     MinLength: 3
     Type: String
   QSS3BucketName:
     AllowedPattern: ^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$
-    ConstraintDescription: The Quick Start bucket name can include numbers, lowercase letters, uppercase letters, and hyphens (-) and must be between 3 (min) and 63 (max) characters long. It cannot start or end with a hyphen (-).
+    ConstraintDescription: S3 bucket name must be 3–63 characters. It can include numbers, lowercase letters, uppercase letters, and hyphens (-), but cannot start or end with a hyphen (-).
     Description: >-
-      Name of the S3 bucket for your copy of the Quick Start assets. Do not change the default value unless you are customizing the deployment. Changing the name updates code references to point to a new Quick Start location.
-      This name can include numbers, lowercase letters, uppercase letters, and hyphens, but do not start or end with a hyphen (-). Bucket names must be between 3 (min) and 63 (max) characters long. To know how you can customize the deployment, see https://aws-quickstart.github.io/option1.html.
+      Name of the S3 bucket for your copy of the deployment assets. Keep the default name unless you are customizing the template. Changing the name updates code references to point to a new location.
     MaxLength: 63
     MinLength: 3
     Default: 'aws-quickstart'
     Type: String
   QSS3BucketRegion:
     Default: 'us-east-1'
-    Description: The AWS Region where the Quick Start S3 bucket (QSS3BucketName) is hosted. Do not change the default value unless you are customizing the deployment. To know how you can customize the deployment, see https://aws-quickstart.github.io/option1.html.
+    Description: 'AWS Region where the S3 bucket (QSS3BucketName) is hosted. Keep the default Region unless you are customizing the template. Changing the Region updates code references to point to a new location. When using your own bucket, specify the Region.'
     Type: String
   QSS3KeyPrefix:
-    AllowedPattern: ^([0-9a-zA-Z-.]+/)*$
-    ConstraintDescription: The Quick Start S3 key prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and forward slashes (/).
+    AllowedPattern: '^[0-9a-zA-Z-/]*$'
+    ConstraintDescription:
+      The S3 key prefix can include numbers, lowercase letters, uppercase letters,
+      hyphens (-), and forward slashes (/). End the prefix with a forward slash.
     Default: quickstart-ibm-security-guardium-insights/
-    Description: >-
-      S3 key prefix that is used to simulate a directory for your copy of the Quick Start assets. Do not change the default value unless you are customizing the deployment.
-      Changing this prefix updates code references to point to a new Quick Start location. This prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and forward slashes (/). Must end with a forward slash,
-      see https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingMetadata.html. To know how you can customize the deployment, see https://aws-quickstart.github.io/option1.html.
+    Description:
+      S3 key prefix that is used to simulate a folder for your copy of the deployment assets. Keep the default prefix unless you are customizing the template. Changing the prefix updates code references to point to a new location.
     Type: String
 Rules:
   AdminUsernameRule:
@@ -906,4 +904,7 @@ Outputs:
     Value: !GetAtt OpenShiftURL.Value
   GIWebClientURL:
     Description: IBM Security Guardium Insights platform URL.
-    Value: !GetAtt GuaridumInsightsURL.Value
+    Value: !GetAtt GuardiumInsightsURL.Value
+  Postdeployment:
+    Description: See the deployment guide for postdeployment steps.
+    Value: https://fwd.aws/4zzGq?
