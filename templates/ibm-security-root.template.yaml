@@ -95,7 +95,7 @@ Metadata:
       GIProductionSize:
         default: IBM Security Guardium Insights production size
       NumberOfMaster:
-        default: Number of master nodes
+        default: Number of control plane nodes
       NumberOfGINodes:
         default: Number of Guardium Insights nodes
       NumberOfDb2DataNodes:
@@ -252,7 +252,7 @@ Parameters:
     Type: String
   ClusterName:
     AllowedPattern: ^[0-9a-z-.]*$
-    ConstraintDescription: Must contain valid cluster name. The name must start with a letter, can contain letters, numbers, periods (.), and hyphen (-).
+    ConstraintDescription: Must contain valid cluster name. The name must start with a letter, and can contain letters, numbers, periods (.), and hyphen (-).
     Description: Red Hat OpenShift Container Platform cluster name. The name must start with a letter and can contain letters, numbers, periods (.), and hyphens (-). Use a name that is unique across Regions.
     Type: String
   RedhatPullSecret:
@@ -272,7 +272,7 @@ Parameters:
       - 5
     Default: 3
     Description: >-
-      Desired capacity for OpenShift container storage node instances. Choose "3" for an extra small or small Guardium Insights production deployment. Choose "5" for a medium or large production deployment.
+      Desired number of OpenShift container storage node instances. Choose "3" for an extra small or small Guardium Insights production deployment. Choose "5" for a medium or large production deployment.
     Type: Number
   OCSInstanceType:
     AllowedValues:
@@ -305,7 +305,7 @@ Parameters:
     Description: Version of IBM Security Guardium Insights to be deployed.
     Type: String
   Namespace:
-    ConstraintDescription: IBM Security Guardium Insights namespace must be 3-10 characters in length.
+    ConstraintDescription: IBM Security Guardium Insights namespace must be 3–10 characters in length.
     Description: OpenShift project where IBM Security Guardium Insights is deployed.
     MaxLength: 10
     MinLength: 3
@@ -355,7 +355,7 @@ Parameters:
     AllowedValues:
       - 'gp2'
     Default: 'gp2'
-    Description: Storage classes read-write-only (RWO) defined for using IBM Security Guardium Insights.
+    Description: Defined storage classes read-write-only (RWO) defined for using IBM Security Guardium Insights.
     Type: String
   StorageClassRWX:
     AllowedValues:
