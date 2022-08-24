@@ -2,13 +2,12 @@
 
 == Predeployment steps
 
-=== Create an Amazon Simple Storage Service (Amazon S3) bucket
+=== Create an Amazon S3 bucket
 
-You need to create an Amazon Simple Storage Service (Amazon S3) bucket in one of the AWS Regions. See AWS documentation on how to https://docs.aws.amazon.com/AmazonS3/latest/userguide/creating-bucket.html[Create your first Amazon Simple Storage Service (Amazon S3) bucket^].
+Before deploying this Quick Start, you must create an Amazon S3 bucket in the AWS Region you want to use. This bucket stores the Red Hat OpenShift pull secret, which the deployment requires. You can also use it to store a TLS certificate and keys, which are optional. For more information, refer to the following:
 
-To upload files into your Amazon Simple Storage Service (Amazon S3) bucket, see https://docs.aws.amazon.com/AmazonS3/latest/userguide/uploading-an-object-bucket.html[Upload an object to your bucket^].
-
-This Amazon Simple Storage Service (Amazon S3) bucket is used for storing Red Hat OpenShift pull secret which is required for deploying {partner-product-name}. Additionally, it can also be used to store the optional TLS certificates and keys.
+* https://docs.aws.amazon.com/AmazonS3/latest/userguide/create-bucket-overview.html[Creating a bucket^].
+* https://docs.aws.amazon.com/AmazonS3/latest/userguide/upload-objects.html[Uploading objects^].
 
 === Sign up for a Red Hat subscription
 
