@@ -365,15 +365,15 @@ Parameters:
     Type: String
   GIDeploymentLogsBucketName:
     AllowedPattern: ^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$
-    ConstraintDescription: S3 bucket name must be 3–63 characters. It can include numbers, lowercase letters, uppercase letters, and hyphens (-), but cannot start or end with a hyphen (-).
+    ConstraintDescription: S3 bucket name must be 3–63 characters. It can include numbers, lowercase letters, and hyphens (-), but cannot start or end with a hyphen (-).
     Description: >-
-      Name of the S3 bucket for IBM Security Guardium Insights deployment logs. This S3 bucket is created with the stack. Deployment logs contain a record of bootstrap scripting actions and are useful for troubleshooting failed deployments. S3 bucket name must be 3–63 characters. It can include numbers, lowercase letters, uppercase letters, and hyphens (-), but cannot start or end with a hyphen (-).
+      Name of the S3 bucket for IBM Security Guardium Insights deployment logs. This S3 bucket is created with the stack. Deployment logs contain a record of bootstrap scripting actions and are useful for troubleshooting failed deployments. S3 bucket name must be 3–63 characters. It can include numbers, lowercase letters, and hyphens (-), but cannot start or end with a hyphen (-).
     MaxLength: 63
     MinLength: 3
     Type: String
   QSS3BucketName:
-    AllowedPattern: ^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$
-    ConstraintDescription: S3 bucket name must be 3–63 characters. It can include numbers, lowercase letters, uppercase letters, and hyphens (-), but cannot start or end with a hyphen (-).
+    AllowedPattern: '[0-9a-z-]*$'
+    ConstraintDescription: S3 bucket name must be 3–63 characters. It can include numbers, lowercase letters, and hyphens (-), but cannot start or end with a hyphen (-).
     Description: >-
       Name of the S3 bucket for your copy of the deployment assets. Keep the default name unless you are customizing the template. Changing the name updates code references to point to a new location.
     MaxLength: 63
