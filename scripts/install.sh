@@ -398,7 +398,7 @@ do
           printf "\n[ERROR] Timed Out! Failed to create Guardium Insights instance using custom resource(CR).\n\n"
           oc get pods
           exit 1
-        elif [[ $type == 'Failed' ]]; then
+        elif [[ $type == 'Failure' ]]; then
           printf "\n[ERROR] Failed to create Guardium Insights instance using custom resource(CR).\n\n"
           oc get pods
           exit 1        
