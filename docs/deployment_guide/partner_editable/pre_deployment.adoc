@@ -11,21 +11,19 @@ Before deploying this Quick Start, you must create an Amazon S3 bucket in the AW
 
 === Sign up for a Red Hat subscription
 
-This Quick Start requires a Red Hat OpenShift subscription. To get a subscription, first https://www.redhat.com/wapps/ugc/register.html?_flowId=register-flow&_flowExecutionKey=e1s1[create a Red Hat account] if you don't have one. Then log in to access a https://www.redhat.com/en/technologies/cloud-computing/openshift/try-it[60-day trial of OpenShift] or purchase a subscription.
+This Quick Start requires a Red Hat OpenShift subscription. To get a subscription, first https://www.redhat.com/wapps/ugc/register.html?_flowId=register-flow&_flowExecutionKey=e1s1[create a Red Hat account^] if you don't have one. Then log in to access a https://www.redhat.com/en/technologies/cloud-computing/openshift/try-it[60-day trial of OpenShift^] or purchase a subscription.
 
-Download your https://console.redhat.com/openshift/install/aws/installer-provisioned[OpenShift pull secret^] from Red Hat and upload it to the Amazon Simple Storage Service (Amazon S3) bucket you create. During Quick Start deployment, enter the pull secret in the `Red Hat OpenShift pull secret` parameter. The Quick Start uses the secret you provide to provision the cluster.
+Download your https://console.redhat.com/openshift/install/aws/installer-provisioned[OpenShift pull secret^] from Red Hat and upload it to the Amazon Simple Storage Service (Amazon S3) bucket you create. During Quick Start deployment, enter the pull secret for the `Red Hat OpenShift pull secret` (`RedhatPullSecret`) parameter. The Quick Start uses the secret you provide to provision the cluster.
 
 === {partner-product-name} subscription
 
-* The Quick Start requires an entitlement key to access the {partner-product-name} content.
-  ** You can acquire your IBM entitlement key from https://myibm.ibm.com/products-services/containerlibrary[IBM Container Library^].
-  ** During stack creation you will need to pass the IBM entitlement key as the `RepositoryPassword` parameter.
+This Quick Start requires an IBM entitlement key from the https://myibm.ibm.com/products-services/containerlibrary[IBM Container Library^]. During deployment, enter the IBM entitlement key for the `Repository password` (`RepositoryPassword`) parameter.
 
 === Domain name and TLS certificates
 
-Confirm that you have a domain name to use for OpenShift in Amazon Route 53. If you do not have a domain name, see the AWS documentation on https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/domain-register.html[Registering a new domain^].
+This Quick Start requires a domain name registered in Amazon Route 53 to use for OpenShift. For more information, refer to https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/domain-register.html[Registering a new domain^].
 
-To create your own FQDN for the {partner-product-name}, add a DNS record to your hosted zone in Amazon Route 53.
+To create your own fully qualified domain name (FQDN) for the {partner-product-name}, add a DNS record to your hosted zone in Amazon Route 53.
 
 The following procedure explains how to create records using the Amazon Route 53 console.
 
