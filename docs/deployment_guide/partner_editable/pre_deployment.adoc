@@ -11,11 +11,9 @@ Before deploying this Quick Start, you must create an Amazon S3 bucket in the AW
 
 === Sign up for a Red Hat subscription
 
-This Quick Start requires a Red Hat subscription. During the deployment of the Quick Start, provide your https://cloud.redhat.com/openshift/install/aws/installer-provisioned[OpenShift Installer Provisioned Infrastructure pull secret^].
+This Quick Start requires a Red Hat OpenShift subscription. To get a subscription, first https://www.redhat.com/wapps/ugc/register.html?_flowId=register-flow&_flowExecutionKey=e1s1[create a Red Hat account] if you don't have one. Then log in to access a https://www.redhat.com/en/technologies/cloud-computing/openshift/try-it[60-day trial of OpenShift] or purchase a subscription.
 
-If you don’t have a Red Hat account, you can create one on the Red Hat website. Note that registration may require a non-personal email address. To get a 60-day evaluation license for OpenShift, see the instructions in https://www.redhat.com/en/technologies/cloud-computing/openshift/try-it[Red Hat OpenShift Container Platform^].
-
-Upload the https://console.redhat.com/openshift/install/aws/installer-provisioned[OpenShift pull secret^] to your Amazon Simple Storage Service (Amazon S3) bucket. The Quick Start pulls this secret from your Amazon Simple Storage Service (Amazon S3) bucket location to provision the cluster.
+Download your https://console.redhat.com/openshift/install/aws/installer-provisioned[OpenShift pull secret^] from Red Hat and upload it to the Amazon Simple Storage Service (Amazon S3) bucket you create. During Quick Start deployment, enter the pull secret in the `Red Hat OpenShift pull secret` parameter. The Quick Start uses the secret you provide to provision the cluster.
 
 === {partner-product-name} subscription
 
