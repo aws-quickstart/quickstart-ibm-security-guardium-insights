@@ -18,13 +18,11 @@ Before deploying the Quick Start, complete the following:
 To create your own fully qualified domain name (FQDN) for the {partner-product-name}, add a DNS record to your hosted zone in Amazon Route 53.
 
 . Sign into the https://us-east-1.console.aws.amazon.com/console/home?region=us-east-1#[AWS Management Console]. Then open the Amazon Route 53 console.
-. Choose the hosted zone that corresponds to the domain name you will use when creating the stack.
-. Choose *Create Record*.
-. Enter a value for record name, this record will be used for the {partner-product-name} *HostName* parameter value when creating the stack.
-+
-WARNING: Your FQDN must be different from the Red Hat OpenShift Container Platform cluster FQDN or any other FQDN associated with the Red Hat OpenShift Container Platform cluster.
-+
-. Confirm that the record type is `CNAME`.
+. Choose Hosted zones from the left navigation pane.
+. Choose the domain name you registered in Step 7 of <<_predeployment_steps>>.
+. Choose *Create record*.
+. Enter a record name. This must be different from the Red Hat OpenShift Container Platform cluster FQDN or any other FQDN associated with the Red Hat OpenShift Container Platform cluster. During deployment, enter this name for the `IBM Security Guardium Insights host name` (`HostName`) parameter value.
+. For `Record type`, choose `CNAME`.
 . For the value of the record, specify `console-openshift-console.apps.ClusterName.DomainName`, where *ClusterName* and *DomainName* are the respective input parameters used when creating the stack.
 . For the routing policy, pick `Simple routing`, and then choose *Create record*, as shown in <<_create_dns_record>>.
 
