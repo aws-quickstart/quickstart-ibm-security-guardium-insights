@@ -2,18 +2,17 @@
 
 == Predeployment steps
 
-=== Create an Amazon S3 bucket
+=== Create an Amazon S3 bucket for your OpenShift pull secret
 
-Before deploying this Quick Start, you must create an Amazon S3 bucket in the AWS Region you want to use. This bucket stores the Red Hat OpenShift pull secret, which the deployment requires. You can also use it to store a TLS certificate and keys, which are optional. For more information, refer to the following:
+This Quick Start requires an Amazon S3 bucket, a Red Hat OpenShift subscription, and your Red Hat OpenShift pull secret to provision the OpenShift cluster.
 
-* https://docs.aws.amazon.com/AmazonS3/latest/userguide/create-bucket-overview.html[Creating a bucket^].
-* https://docs.aws.amazon.com/AmazonS3/latest/userguide/upload-objects.html[Uploading objects^].
+1. https://docs.aws.amazon.com/AmazonS3/latest/userguide/create-bucket-overview.html[Create an Amazon S3 bucket] in the AWS Region you want to use for the deployment.
+2. https://www.redhat.com/wapps/ugc/register.html?_flowId=register-flow&_flowExecutionKey=e1s1[Create a Red Hat account^] if you don't have one.
+3. Log in to your Red Hat account and sign up for an OpenShift subscription. A https://www.redhat.com/en/technologies/cloud-computing/openshift/try-it[60-day trial of OpenShift^] is available.
+4. Download your https://console.redhat.com/openshift/install/aws/installer-provisioned[OpenShift pull secret^] from Red Hat.
+5. https://docs.aws.amazon.com/AmazonS3/latest/userguide/upload-objects.html[Upload] your pull secret to the S3 bucket.
 
-=== Sign up for a Red Hat subscription
-
-This Quick Start requires a Red Hat OpenShift subscription. To get a subscription, first https://www.redhat.com/wapps/ugc/register.html?_flowId=register-flow&_flowExecutionKey=e1s1[create a Red Hat account^] if you don't have one. Then log in to access a https://www.redhat.com/en/technologies/cloud-computing/openshift/try-it[60-day trial of OpenShift^] or purchase a subscription.
-
-Download your https://console.redhat.com/openshift/install/aws/installer-provisioned[OpenShift pull secret^] from Red Hat and upload it to the Amazon Simple Storage Service (Amazon S3) bucket you create. During Quick Start deployment, enter the pull secret for the `Red Hat OpenShift pull secret` (`RedhatPullSecret`) parameter. The Quick Start uses the secret you provide to provision the cluster.
+NOTE: During Quick Start deployment, enter the pull secret for the `Red Hat OpenShift pull secret` (`RedhatPullSecret`) parameter.
 
 === {partner-product-name} subscription
 
@@ -24,8 +23,6 @@ This Quick Start requires an IBM entitlement key from the https://myibm.ibm.com/
 This Quick Start requires a domain name registered in Amazon Route 53 to use for OpenShift. For more information, refer to https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/domain-register.html[Registering a new domain^].
 
 To create your own fully qualified domain name (FQDN) for the {partner-product-name}, add a DNS record to your hosted zone in Amazon Route 53.
-
-The following procedure explains how to create records using the Amazon Route 53 console.
 
 . Go to Amazon Route 53 console. https://us-east-1.console.aws.amazon.com/route53[Click here^].
 . Choose the hosted zone that corresponds to the domain name you will use when creating the stack.
