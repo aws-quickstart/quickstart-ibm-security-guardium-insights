@@ -7,11 +7,26 @@ image::../docs/deployment_guide/images/cfn-outputs.png[{partner-product-name} de
 
 == Postdeployment steps
 
+This section explains how to log in to the {partner-product-name} and Red Hat OpenShift Container Platform consoles after deploying the Quick Start.
+
+=== {partner-product-name} console
+
+. Sign into the https://us-east-1.console.aws.amazon.com/console/home?region=us-east-1#[AWS Management Console]. Then open the AWS CloudFormation console.
+. Choose *Stacks* from the left navigation pane.
+. Choose the {partner-product-name} stack.
+. Choose the *Outputs* tab. The {partner-product-name} URL is the `GIWebClientURL` value on the *Outputs* tab.
+. Log in to {partner-product-name} using the administrator username (`AdminUsername`) and password (`AdminPassword`) you entered as parameters during deployment.
++
+If you did not enter an administrator password during deployment, you can use the default IBM Cloud Pak foundational services password. In the CloudFormation console, retrieve this from the `GIAdminSecret` value on the *Resources* tab of the {partner-product-name} stack.
+
+
+
+
 === Login into {partner-product-name}
 
 To access the {partner-product-name} UI, navigate to the *GIWebClientURL* in the Outputs tab of the root stack. See <<_cfn_outputs>>.
 
-Log in to {partner-product-name} web console by using the default authentication method by providing IBM Cloud Pak® foundational services *AdminUsername* and *AdminPassword* that you provided while creating the stack. 
+Log in to {partner-product-name} web console by using the default authentication method by providing IBM Cloud Pak® foundational services *AdminUsername* and *AdminPassword* that you provided while creating the stack.
 
 NOTE: Users can provide their own custom *AdminUsername* and *AdminPassword* while lauching the stack. If no password is provided, the default IBM Cloud Pak® foundational services password generated during the deployment can be retrieved from *GIAdminSecret* resource.
 
