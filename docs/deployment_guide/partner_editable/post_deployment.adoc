@@ -1,46 +1,35 @@
 // Include any postdeployment steps here, such as steps necessary to test that the deployment was successful. If there are no postdeployment steps, leave this file empty.
 
 [#_cfn_outputs]
-.{partner-product-name} outputs after successful deployment
+.{partner-product-name} outputs after a successful deployment
 [link=images/cfn-outputs.png]
 image::../docs/deployment_guide/images/cfn-outputs.png[{partner-product-name} deployment outputs]
 
 == Postdeployment steps
 
-This section explains how to log in to the {partner-product-name} and Red Hat OpenShift Container Platform consoles after deploying the Quick Start.
-
-=== {partner-product-name} console
+=== Logging into {partner-product-name}
 
 . Sign into the https://us-east-1.console.aws.amazon.com/console/home?region=us-east-1#[AWS Management Console]. Then open the AWS CloudFormation console.
 . Choose *Stacks* from the left navigation pane.
 . Choose the {partner-product-name} stack.
-. Choose the *Outputs* tab. The {partner-product-name} URL is the `GIWebClientURL` value on the *Outputs* tab.
-. Log in to {partner-product-name} using the administrator username (`AdminUsername`) and password (`AdminPassword`) you entered as parameters during deployment.
+. Choose the *Outputs* tab. The {partner-product-name} URL is the `GIWebClientURL` value on the *Outputs* tab, as shown in <<_cfn_outputs>>.
+. Navigate to the `GIWebClientURL` and log in using the administrator username (`AdminUsername`) and password (`AdminPassword`) you entered as parameters during deployment.
 +
 If you did not enter an administrator password during deployment, you can use the default IBM Cloud Pak foundational services password. To retrieve this, do the following:
 
 .. On the *Resources* tab of the {partner-product-name} stack, choose the `GIAdminSecret`.
-.. On the `GIAdminSecret` page in the AWS Secrets Manager console, in the *Secret value* section, choose *Retrieve secret value*. Use this secret value as the administrator password.
+.. On the `GIAdminSecret` page in the AWS Secrets Manager console, in the *Secret value* section, choose *Retrieve secret value*. Use this secret value as the {partner-product-name} administrator password.
 
-=== Manage your cluster using the Red Hat OpenShift web console
+=== Logging into the Red Hat OpenShift console
 
-To access the Red Hat Openshift Container Platform web console, navigate to the *OpenshiftWebConsoleURL* in the *Outputs* tab of the root stack. See, <<_cfn_outputs>>.
+. Navigate to the `OpenshiftWebConsoleURL` on the *Outputs* tab of the {partner-product-name} stack, as shown in <<_cfn_outputs>>.
+. Log in to the OpenShift console using the default administrator username `kubeadmin`.
+. To obtain the OpenShift administrator password, complete the following:
+.. On the *Resources* tab of the {partner-product-name} stack, choose the `OpenShiftSecret`.
+.. On the `OpenShiftSecret` page in the AWS Secrets Manager console, in the *Secret value* section, choose *Retrieve secret value*. Use this secret value as the OpenShift administrator password.
 
-Log in to the Openshift web console by using use the default OpenShift administrator *kubeadmin*. The password can be obtained from the *OpenShiftSecret* resource from the `Resources` tab of {partner-product-name} stack.
+=== Accessing Red Hat OpenShift cluster from a command line
 
-.OpenShift secret resource
-[link=images/oc-secret-resource.png]
-image::../docs/deployment_guide/images/oc-secret-resource.png[OpenShift secret resource]
-
-{empty} +
-You can retrieve the secret value by choosing *Retrieve secret value*, as shown in the following figure. Use this secret value as OpenShift console administrative password.
-
-.Retrieve secret value for console password
-[link=images/retrieve-secret.png]
-image::../docs/deployment_guide/images/retrieve-secret.png[Retrieve secret value for console password]
-
-=== Accessing Red Hat OpenShift cluster from the command-line interface
-
-. In your Red Hat OpenShift web console, choose your profile name and then select *Copy Login*.
-. Choose *Display Token*, copy the oc login command, and paste the command into your command line.
+. In your Red Hat OpenShift web console, choose your profile name and then choose *Copy Login*.
+. Choose *Display Token*, copy the `oc login` command, and paste the command onto a command line.
 
