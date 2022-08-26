@@ -17,12 +17,12 @@ Before deploying the Quick Start, complete the following:
 
 To create your own fully qualified domain name (FQDN) for the {partner-product-name}, add a DNS record to your hosted zone in Amazon Route 53.
 
-. Go to Amazon Route 53 console. https://us-east-1.console.aws.amazon.com/route53[Click here^].
+. Sign into the https://us-east-1.console.aws.amazon.com/console/home?region=us-east-1#[AWS Management Console]. Then open the Amazon Route 53 console.
 . Choose the hosted zone that corresponds to the domain name you will use when creating the stack.
 . Choose *Create Record*.
 . Enter a value for record name, this record will be used for the {partner-product-name} *HostName* parameter value when creating the stack.
 +
-WARNING: Make sure that your FQDN must not be the same as the Red Hat OpenShift Container Platform cluster FQDN, or any other FQDN associated with the Red Hat OpenShift Container Platform cluster.
+WARNING: Your FQDN must be different from the Red Hat OpenShift Container Platform cluster FQDN or any other FQDN associated with the Red Hat OpenShift Container Platform cluster.
 +
 . Confirm that the record type is `CNAME`.
 . For the value of the record, specify `console-openshift-console.apps.ClusterName.DomainName`, where *ClusterName* and *DomainName* are the respective input parameters used when creating the stack.
@@ -34,6 +34,6 @@ WARNING: Make sure that your FQDN must not be the same as the Red Hat OpenShift 
 image::../docs/deployment_guide/images/create-dns-record.png[DNS Record]
 
 {empty} +
-If you are using your own FQDN, you must provide an optional `TLS certificate` and `TLS key`, that use keys that are signed by a trusted certificate authority (CA). A custom TLS certificate is required, if the provided server keys are not signed by a trusted certificate authority. For more information, see the {partner-product-name} documentation on https://www.ibm.com/docs/en/guardium-insights/3.1.x?topic=planning-domain-name-tls-certificates[Domain Name and TLS Certificates^].
+If you are using your own FQDN, you must provide an optional `TLS certificate` and `TLS key`, that use keys signed by a trusted certificate authority (CA). If the server keys are not signed by a trusted CA, A custom TLS certificate is required. For more information, refer to https://www.ibm.com/docs/en/guardium-insights/3.1.x?topic=planning-domain-name-tls-certificates[Domain Name and TLS Certificates^].
 
-Upload the TLS certificate, TLS key and custom TLS certificate to your Amazon Simple Storage Service (Amazon S3) bucket. The Quick Start pulls these certificates and keys from your Amazon Simple Storage Service (Amazon S3) bucket location for {partner-product-name} deployment.
+Upload the TLS certificate, TLS key, and custom TLS certificate to the S3 bucket you created for your pull secret. The Quick Start retrieves these during deployment.
