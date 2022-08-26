@@ -555,7 +555,7 @@ Mappings:
       RHEL79HVM: ami-08acb85e5164523d7
       COREOS: ami-01332c66b87f30aff
     us-east-1:
-      RHEL79HVM: ami-004fac3d4533a2541
+      RHEL79HVM: ami-09b40379115c82c17
       COREOS: ami-021c7a1bb7d05e1b6
     us-east-2:
       RHEL79HVM: ami-0bb2449c2217cb9b0
