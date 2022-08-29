@@ -9,7 +9,7 @@ image::../docs/deployment_guide/images/cfn-outputs.png[{partner-product-name} de
 
 === Logging into {partner-product-name}
 
-. Sign into the https://us-east-1.console.aws.amazon.com/console/home?region=us-east-1#[AWS Management Console]. Then open the AWS CloudFormation console.
+. Sign into the https://us-east-1.console.aws.amazon.com/console/home?region=us-east-1#[AWS Management Console^]. Then open the AWS CloudFormation console.
 . Choose *Stacks* from the left navigation pane.
 . Choose the {partner-product-name} stack.
 . Choose the *Outputs* tab. The {partner-product-name} URL is the `GIWebClientURL` value on the *Outputs* tab, as shown in <<_cfn_outputs>>.

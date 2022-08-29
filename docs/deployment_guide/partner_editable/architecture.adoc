@@ -27,6 +27,3 @@ As shown in <<architecture1>>, this Quick Start sets up the following:
 * AWS Secrets Manager to encrypt, store, and retrieve credentials and secrets for the Guardium Insights deployment.
 
 [.small]#* The template that deploys this Quick Start into an existing VPC skips the components marked by asterisks and prompts you for your existing VPC configuration.#
-
-The Quick Start supports deployment of {partner-product-name} xsmall, small, medium and large production sizes on the AWS Cloud. View {partner-product-name} https://www.ibm.com/docs/en/guardium-insights/3.1.x?topic=planning-hardware-cluster-requirements[Hardware cluster requirements^] to learn the hardware requirements for different production sizes that suit your business needs.
-

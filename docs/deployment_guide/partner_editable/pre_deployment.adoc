@@ -4,20 +4,20 @@
 
 Before deploying the Quick Start, complete the following:
 
-. https://docs.aws.amazon.com/AmazonS3/latest/userguide/create-bucket-overview.html[Create an Amazon S3 bucket] in the AWS Region you want to use for the deployment.
+. https://docs.aws.amazon.com/AmazonS3/latest/userguide/create-bucket-overview.html[Create an Amazon S3 bucket^] in the AWS Region you want to use for the deployment.
 . https://www.redhat.com/wapps/ugc/register.html?_flowId=register-flow&_flowExecutionKey=e1s1[Create a Red Hat account^] if you don't have one.
 . Log in to your Red Hat account and sign up for an OpenShift subscription. A https://www.redhat.com/en/technologies/cloud-computing/openshift/try-it[60-day trial of OpenShift^] is available.
 . Download your https://console.redhat.com/openshift/install/aws/installer-provisioned[OpenShift pull secret^] from Red Hat.
-. https://docs.aws.amazon.com/AmazonS3/latest/userguide/upload-objects.html[Upload] your pull secret to the S3 bucket. During deployment, enter the IBM entitlement key for the `Repository password` (`RepositoryPassword`) parameter. The Quick Start uses the pull secret to provision the OpenShift cluster.
+. https://docs.aws.amazon.com/AmazonS3/latest/userguide/upload-objects.html[Upload^] your pull secret to the S3 bucket. During deployment, enter the IBM entitlement key for the `Repository password` (`RepositoryPassword`) parameter. The Quick Start uses the pull secret to provision the OpenShift cluster.
 . Obtain an IBM entitlement key from the https://myibm.ibm.com/products-services/containerlibrary[IBM Container Library^]. During deployment, enter the IBM entitlement key for the `Repository password` (`RepositoryPassword`) parameter.
-. https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/domain-register.html[Register a domain name] in Amazon Route 53 to use for OpenShift.
+. https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/domain-register.html[Register a domain name^] in Amazon Route 53 to use for OpenShift.
 . (Optional) To create your own fully-qualified domain name (FQDN), add a DNS record to your hosted zone in Amazon Route 53. Refer to <<_optional_create_your_own_fqdn>>, later in this guide.
 
 === (Optional) Create your own FQDN
 
 To create your own fully qualified domain name (FQDN) for the {partner-product-name}, add a DNS record to your hosted zone in Amazon Route 53.
 
-. Sign into the https://us-east-1.console.aws.amazon.com/console/home?region=us-east-1#[AWS Management Console]. Then open the Amazon Route 53 console.
+. Sign into the https://us-east-1.console.aws.amazon.com/console/home?region=us-east-1#[AWS Management Console^]. Then open the Amazon Route 53 console.
 . Choose *Hosted zones* from the left navigation pane.
 . Choose the domain name you registered in Step 7 of <<_predeployment_steps>>.
 . Choose *Create record*.
@@ -29,4 +29,6 @@ To create your own fully qualified domain name (FQDN) for the {partner-product-n
 
 Upload the TLS certificate, TLS key, and custom TLS certificate to the S3 bucket you created for your OpenShift pull secret. During deployment, enter the TLS certificate, TLS keys, and custom TLS certificate as parameters. For more information, refer to https://www.ibm.com/docs/en/guardium-insights/3.1.x?topic=planning-domain-name-tls-certificates[Domain Name and TLS Certificates^].
 
+=== Deployment sizes
 
+The Quick Start supports extra-small, small, medium, and large deployments of {partner-product-name} on the AWS Cloud. During deployment, specify a production size using the `IBM Security Guardium Insights production size`` (`GIProductionSize`) parameter. For more information about the hardware requirements for different production sizes, refer to https://www.ibm.com/docs/en/guardium-insights/3.1.x?topic=planning-hardware-cluster-requirements[Hardware cluster requirements^].
