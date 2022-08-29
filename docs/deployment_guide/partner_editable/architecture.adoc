@@ -18,7 +18,7 @@ As shown in <<architecture1>>, this Quick Start sets up the following:
 ** An Amazon Elastic Compute Cloud (Amazon EC2) instance for a boot node and bastion host to allow outbound internet access for resources in the private subnet.
 * In the private subnet, a Red Hat OpenShift Container Platform (OCP) cluster made up of the following:
 ** Control plane nodes to manage the cluster and run the OpenShift web console.
-** Compute nodes in an OpenShift autoscaling group for running Guardium Insights.
+** Compute nodes in an OpenShift autoscaling group. Guardim Insights runs as a containerized application on the compute nodes.
 * Network Load Balancers for routing internal and external OpenShift API traffic to control plane nodes.
 * A Classic Load Balancer for accessing Guardium Insights on compute nodes from a web browser.
 * Amazon Elastic Block Storage (Amazon EBS) for volumes attached to compute nodes to persist container data.
@@ -27,8 +27,6 @@ As shown in <<architecture1>>, this Quick Start sets up the following:
 * AWS Secrets Manager to encrypt, store, and retrieve credentials and secrets for the Guardium Insights deployment.
 
 [.small]#* The template that deploys this Quick Start into an existing VPC skips the components marked by asterisks and prompts you for your existing VPC configuration.#
-
-The {partner-product-name} components run as containers on the OpenShift compute nodes, and build on a range of common platform and operational services that underpin all IBM Cloud Paks.
 
 The Quick Start supports deployment of {partner-product-name} xsmall, small, medium and large production sizes on the AWS Cloud. View {partner-product-name} https://www.ibm.com/docs/en/guardium-insights/3.1.x?topic=planning-hardware-cluster-requirements[Hardware cluster requirements^] to learn the hardware requirements for different production sizes that suit your business needs.
 
