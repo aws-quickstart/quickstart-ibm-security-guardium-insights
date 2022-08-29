@@ -1,13 +1,13 @@
 // Add any unique troubleshooting steps here.
-Make notes of the the log files that are generated in the output S3 bucket: 
+The deployment generates the following standard output (`stdout`) log files and in the output S3 bucket:
 
-* ocp_install.log - STDOUT of the deployment of Red Hat OpenShift Container Platform using IPI.
-* gi_install.log - STDOUT of the deployment of installing IBM Cloud Pak foundational services and IBM Security Guardium Insights including the validation of the installation.
-* bootstrap.log - STDOUT of the high overview of the events during deployment of Red Hat OpenShift Container Platform and IBM Security Guardium Insights.  
+* `ocp_install.log` - Standard output of Red Hat OpenShift Container Platform deployment using installer-provisioned infrastructure (IPI).
+* `gi_install.log` - Standard output of IBM Cloud Pak foundational services and IBM Security Guardium Insights installation, including installation validation.
+* `bootstrap.log` - Standard output of a high-level overview of events during deployment of Red Hat OpenShift Container Platform and IBM Security Guardium Insights.
 
-For troubleshooting {partner-product-name} related issues, refer to the https://www.ibm.com/docs/en/guardium-insights/3.1.x?topic=problems-techniques-troubleshooting[{partner-product-name} Troubleshooting and Support Guide^].
+For troubleshooting {partner-product-name}, refer to https://www.ibm.com/docs/en/guardium-insights/3.1.x?topic=problems-techniques-troubleshooting[Techniques for troubleshooting problems^].
 
-For troubleshooting common Quick Start issues, refer to the https://fwd.aws/rA69w?[AWS Quick Start General Information Guide^] and https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/troubleshooting.html[Troubleshooting CloudFormation^].
+For troubleshooting common Quick Start issues, refer to the https://fwd.aws/rA69w?[AWS Quick Starts General Information Guide^] and https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/troubleshooting.html[Troubleshooting CloudFormation^].
 
 // == Resources
 // Uncomment section and add links to any external resources that are specified by the partner.
