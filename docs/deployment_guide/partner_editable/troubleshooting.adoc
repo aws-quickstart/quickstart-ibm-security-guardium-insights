@@ -1,9 +1,9 @@
 // Add any unique troubleshooting steps here.
-The deployment generates the following standard output (`stdout`) log files and in the output S3 bucket:
+The deployment generates the following standard output (`stdout`) log files in the output S3 bucket:
 
-* `ocp_install.log` - Standard output of Red Hat OpenShift Container Platform deployment using installer-provisioned infrastructure (IPI).
-* `gi_install.log` - Standard output of IBM Cloud Pak foundational services and IBM Security Guardium Insights installation, including installation validation.
-* `bootstrap.log` - Standard output of a high-level overview of events during deployment of Red Hat OpenShift Container Platform and IBM Security Guardium Insights.
+* `ocp_install.log` – Standard output of Red Hat OpenShift Container Platform deployment using installer-provisioned infrastructure (IPI).
+* `gi_install.log` – Standard output of IBM Cloud Pak foundational services and IBM Security Guardium Insights installation, including installation validation.
+* `bootstrap.log` – Standard output of a high-level overview of events during deployment of Red Hat OpenShift Container Platform and IBM Security Guardium Insights.
 
 For troubleshooting {partner-product-name}, refer to https://www.ibm.com/docs/en/guardium-insights/3.1.x?topic=problems-techniques-troubleshooting[Techniques for troubleshooting problems^].
 
