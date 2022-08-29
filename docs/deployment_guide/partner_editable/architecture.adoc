@@ -18,7 +18,7 @@ As shown in <<architecture1>>, this Quick Start sets up the following:
 ** An Amazon Elastic Compute Cloud (Amazon EC2) instance for a boot node and bastion host to allow outbound internet access for resources in the private subnet.
 * In the private subnet, a Red Hat OpenShift Container Platform (OCP) cluster made up of the following:
 ** Control plane nodes to manage the cluster and run the OpenShift web console.
-** Compute nodes in an OpenShift autoscaling group. Guardim Insights runs as a containerized application on the compute nodes.
+** Compute nodes in an OpenShift autoscaling group. Guardium Insights runs as a containerized application on the compute nodes.
 * Network Load Balancers for routing internal and external OpenShift API traffic to control plane nodes.
 * A Classic Load Balancer for accessing Guardium Insights on compute nodes from a web browser.
 * Amazon Elastic Block Storage (Amazon EBS) for volumes attached to compute nodes to persist container data.

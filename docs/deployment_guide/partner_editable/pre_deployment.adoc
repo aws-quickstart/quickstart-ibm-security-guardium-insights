@@ -31,4 +31,4 @@ Upload the TLS certificate, TLS key, and custom TLS certificate to the S3 bucket
 
 === Deployment sizes
 
-The Quick Start supports extra-small, small, medium, and large deployments of {partner-product-name} on the AWS Cloud. During deployment, specify a production size using the `IBM Security Guardium Insights production size`` (`GIProductionSize`) parameter. For more information about the hardware requirements for different production sizes, refer to https://www.ibm.com/docs/en/guardium-insights/3.1.x?topic=planning-hardware-cluster-requirements[Hardware cluster requirements^].
+The Quick Start supports extra-small, small, medium, and large deployments of {partner-product-name} on the AWS Cloud. During deployment, specify a production size using the `IBM Security Guardium Insights production size` (`GIProductionSize`) parameter. For more information about the hardware requirements for different production sizes, refer to https://www.ibm.com/docs/en/guardium-insights/3.1.x?topic=planning-hardware-cluster-requirements[Hardware cluster requirements^].

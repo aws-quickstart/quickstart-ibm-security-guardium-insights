@@ -1,5 +1,5 @@
 // Add any unique troubleshooting steps here.
-The deployment generates the following standard output (`stdout`) log files in the output S3 bucket:
+The deployment generates the following standard output (stdout) log files in the output S3 bucket:
 
 * `ocp_install.log` – Standard output of Red Hat OpenShift Container Platform deployment using installer-provisioned infrastructure (IPI).
 * `gi_install.log` – Standard output of IBM Cloud Pak foundational services and IBM Security Guardium Insights installation, including installation validation.
