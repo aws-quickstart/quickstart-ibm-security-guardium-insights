@@ -2,5 +2,4 @@
 
 There is no cost to use this Quick Start, but you will be billed for any AWS services or resources that this Quick Start deploys. For more information, refer to the https://fwd.aws/rA69w?[AWS Quick Start General Information Guide^].
 
-For {partner-product-name} product and pricing information, or to use your existing entitlements, contact your IBM sales representative or schedule a meeting online at https://www.ibm.com/products/guardium-insights?schedulerform=[IBM Security Guardium Insights^]. 
-For more information about licensing terms, see the {partner-product-name} https://www-40.ibm.com/software/sla/sladb.nsf/displaylis/86DB37DE08983CEF00258868002EA48C?OpenDocument[software license agreement^].
+For {partner-product-name} product and pricing information, or to use your existing entitlements, contact your IBM sales representative or schedule a meeting online at https://www.ibm.com/products/guardium-insights?schedulerform=[IBM Security Guardium Insights^]. For more information about licensing terms, see the {partner-product-name} https://www-40.ibm.com/software/sla/sladb.nsf/displaylis/86DB37DE08983CEF00258868002EA48C?OpenDocument[software license agreement^].
