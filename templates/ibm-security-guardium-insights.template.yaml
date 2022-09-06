@@ -536,12 +536,12 @@ Mappings:
       COREOS: ami-0e75819e503f14c30
     eu-west-3:
       RHEL79HVM: ami-07185297899bb7755
-      COREOS: aami-091c1eedd26198135
+      COREOS: ami-091c1eedd26198135
     sa-east-1:
       RHEL79HVM: ami-08acb85e5164523d7
       COREOS: ami-01332c66b87f30aff
     us-east-1:
-      RHEL79HVM: ami-004fac3d4533a2541
+      RHEL79HVM: ami-09b40379115c82c17
       COREOS: ami-021c7a1bb7d05e1b6
     us-east-2:
       RHEL79HVM: ami-0bb2449c2217cb9b0
