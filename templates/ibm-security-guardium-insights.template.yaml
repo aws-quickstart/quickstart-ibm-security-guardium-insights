@@ -904,7 +904,7 @@ Outputs:
     Value: !GetAtt OpenShiftURL.Value
   GIWebClientURL:
     Description: IBM Security Guardium Insights platform URL.
-    Value: !GetAtt GuardiumInsightsURL.Value
+    Value: !GetAtt GuaridumInsightsURL.Value
   Postdeployment:
     Description: See the deployment guide for postdeployment steps.
     Value: https://fwd.aws/4zzGq?
