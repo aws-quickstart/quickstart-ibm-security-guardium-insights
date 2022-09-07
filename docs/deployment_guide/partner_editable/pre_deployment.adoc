@@ -5,11 +5,10 @@
 Before deploying the Quick Start, complete the following:
 
 . https://docs.aws.amazon.com/AmazonS3/latest/userguide/create-bucket-overview.html[Create an Amazon S3 bucket^] in the AWS Region you want to use for the deployment.
+. Obtain an IBM entitlement key from the https://myibm.ibm.com/products-services/containerlibrary[IBM Container Library^], which includes a Red Hat OpenShift subscription. During deployment, enter the IBM entitlement key for the `Repository password` (`RepositoryPassword`) parameter.
 . https://www.redhat.com/wapps/ugc/register.html?_flowId=register-flow&_flowExecutionKey=e1s1[Create a Red Hat account^] if you don't have one.
-. Log in to your Red Hat account and sign up for an OpenShift subscription. A https://www.redhat.com/en/technologies/cloud-computing/openshift/try-it[60-day trial of OpenShift^] is available.
-. Download your https://console.redhat.com/openshift/install/aws/installer-provisioned[OpenShift pull secret^] from Red Hat.
+. Log into your Red Hat account and download your https://console.redhat.com/openshift/install/aws/installer-provisioned[OpenShift pull secret^] from Red Hat.
 . https://docs.aws.amazon.com/AmazonS3/latest/userguide/upload-objects.html[Upload^] your pull secret to the S3 bucket. During deployment, enter the IBM entitlement key for the `Repository password` (`RepositoryPassword`) parameter. The Quick Start uses the pull secret to provision the OpenShift cluster.
-. Obtain an IBM entitlement key from the https://myibm.ibm.com/products-services/containerlibrary[IBM Container Library^]. During deployment, enter the IBM entitlement key for the `Repository password` (`RepositoryPassword`) parameter.
 . https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/domain-register.html[Register a domain name^] in Amazon Route 53 to use for OpenShift.
 . (Optional) To create your own fully-qualified domain name (FQDN), add a DNS record to your hosted zone in Amazon Route 53. Refer to <<_optional_create_your_own_fqdn>>, later in this guide.
 
