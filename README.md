@@ -1,7 +1,7 @@
 
-IBM Security Guardium Insights—Quick Start
+# IBM Security Guardium Insights—Quick Start
 
-For architectural details, step-by-step instructions, and customization options, see the [deployment guide](https://fwd.aws/7agyk?).
+For architectural details, step-by-step instructions, and customization options, see the [deployment guide](https://fwd.aws/4zzGq?).
 
 To post feedback, submit feature ideas, or report bugs, use the **Issues** section of this GitHub repo.
 
