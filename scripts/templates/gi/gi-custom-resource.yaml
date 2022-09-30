@@ -40,6 +40,7 @@ spec:
     image:
       insightsPullSecret: ibm-entitlement-key
       repository: cp.icr.io/cp/ibm-guardium-insights
+      useTag: "true"
     size: values-${production-size}
     insights:
       ingress:

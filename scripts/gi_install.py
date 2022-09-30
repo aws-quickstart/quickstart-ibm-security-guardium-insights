@@ -208,10 +208,10 @@ class GuardiumInsightsInstall(object):
         asf_1az = "/ibm/templates/gi/machine-autoscaler-1AZ.yaml"
         hc_1az = "/ibm/templates/gi/health-check-1AZ.yaml"
 
-        if len(self.availability_zones) == 1:
-            shutil.copyfile(icf_1az, installConfigFile)
-            shutil.copyfile(asf_1az, autoScalerFile)
-            shutil.copyfile(hc_1az, healthcheckFile)
+        #if len(self.availability_zones) == 1:
+        shutil.copyfile(icf_1az, installConfigFile)
+        shutil.copyfile(asf_1az, autoScalerFile)
+        shutil.copyfile(hc_1az, healthcheckFile)
         # endIf
 
         self.update_template_file(installConfigFile, '${az1}', self.availability_zones[0])
@@ -462,8 +462,11 @@ class GuardiumInsightsInstall(object):
 
     def install_gi(self, ocp_install_log_file):
         method_name = "install_gi"
-        TR.info(method_name, "Starting installation of IBM Security Guardium Insights")
-        gi_cr_file = "/ibm/templates/gi/gi-custom-resource.yaml"
+        TR.info(method_name, "Starting installation of IBM Security Guardium Insights v%s" % self.GIVersion)
+        if self.GIProductionSize == "xlarge":
+           gi_cr_file = "/ibm/templates/gi/gi-custom-resource-xlarge.yaml"
+        else:
+            gi_cr_file = "/ibm/templates/gi/gi-custom-resource.yaml"
         self.LicenseType = self.LicenseType.split(" ", 1)[0]
         self.ocp_server_url = "api."+self.ClusterName+"."+self.DomainName+":6443"  #nosec
         if self.admin_password == "":  #nosec
@@ -480,19 +483,22 @@ class GuardiumInsightsInstall(object):
         elif self.GIProductionSize == "med":
             self.db2_memory = "110Gi"
             self.ics_size = "medium"
-        else:
+        elif self.GIProductionSize == "large":
             self.db2_memory = "220Gi"
+            self.ics_size = "large"
+        else:
             self.ics_size = "large"
         TR.info(method_name, "Updating Guardium Insights custom resource file")
         self.update_template_file(gi_cr_file, '${namespace}', self.Namespace)
         self.update_template_file(gi_cr_file, '${version}', self.GIVersion)
         self.update_template_file(gi_cr_file, '${license-type}', self.LicenseType)
-        self.update_template_file(gi_cr_file, '${production-size}', self.GIProductionSize)
-        self.update_template_file(gi_cr_file, '${db2-memory}', self.db2_memory)
         self.update_template_file(gi_cr_file, '${host-name}', self.HostName)
         self.update_template_file(gi_cr_file, '${domain-name}', self.DomainName)
         self.update_template_file(gi_cr_file, '${storage-class-rwo}', self.StorageClassRWO)
         self.update_template_file(gi_cr_file, '${storage-class-rwx}', self.StorageClassRWX)
+        if self.GIProductionSize != "xlarge":
+          self.update_template_file(gi_cr_file, '${production-size}', self.GIProductionSize)
+          self.update_template_file(gi_cr_file, '${db2-memory}', self.db2_memory)
         TR.info(method_name, "Updated Guardium Insights custom resource file")
 
         install_gi_cmd = (
@@ -505,10 +511,12 @@ class GuardiumInsightsInstall(object):
             " " + self.admin_password +
             " " + self.db2_size +
             " " + self.taint_data_node +
-            " " + self.repository_password)
+            " " + self.repository_password +
+            " " + self.GIVersion +
+            " " + self.GIProductionSize)
         TR.info(method_name, "Output File name: '/ibm/logs/gi_install.log'")
         try:
-            TR.info(method_name, "Initiating installation of IBM Security Guardium Insights")
+            TR.info(method_name, "Initiating installation of IBM Security Guardium Insights v%s" % self.GIVersion)
             check_call(['bash', '-c', install_gi_cmd])
         except CalledProcessError as e:
             TR.error(method_name, "[ERROR] Command '{}' returned non-zero exit status {}".format(e.cmd, e.returncode))
@@ -525,7 +533,7 @@ class GuardiumInsightsInstall(object):
         except CalledProcessError as e:
             TR.error(method_name, "[ERROR] Command '{}' returned non-zero exit status {}: {}".format(e.cmd, e.returncode, e.output))
             raise e
-        TR.info(method_name, "Completed installation of IBM Security Guardium Insights")
+        TR.info(method_name, "Completed installation of IBM Security Guardium Insights v%s" % self.GIVersion)
         # retrieve Guardium Insights host name
         get_hostname = r"oc get guardiuminsights -o=jsonpath='{.items[*].status.hostName}'"
         try:

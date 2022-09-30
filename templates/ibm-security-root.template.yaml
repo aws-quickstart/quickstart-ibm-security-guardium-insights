@@ -1,9 +1,9 @@
-AWSTemplateFormatVersion: '2010-09-09'
-Description: 'Template for IBM Security Guardium Insights deployment into a new VPC. This is the root template for a collection of nested stacks that make up the full IBM Security Guardium Insights deployment. **WARNING** This template creates EC2 instances and related resources. You will be billed for the AWS resources used if you create a stack from this template. (qs-1t8abe2qb)'
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "Template for IBM Security Guardium Insights deployment into a new VPC. This is the root template for a collection of nested stacks that make up the full IBM Security Guardium Insights deployment. **WARNING** This template creates EC2 instances and related resources. You will be billed for the AWS resources used if you create a stack from this template. (qs-1t8abe2qb)"
 Metadata:
   QuickStartDocumentation:
-    EntrypointName: 'Launch IBM Security Guardium Insights into a new VPC on AWS'
-    Order: '1'
+    EntrypointName: "Launch IBM Security Guardium Insights into a new VPC on AWS"
+    Order: "1"
   cfn-lint:
     config:
       ignore_checks:
@@ -95,11 +95,11 @@ Metadata:
       GIProductionSize:
         default: IBM Security Guardium Insights production size
       NumberOfMaster:
-        default: Number of control plane nodes
+        default: Number of master nodes
       NumberOfGINodes:
         default: Number of Guardium Insights nodes
       NumberOfDb2DataNodes:
-        default: Number of IBM Db2 data nodes
+        default: Number of Db2 data nodes
       MasterInstanceType:
         default: Master node instance type
       GINodeInstanceType:
@@ -125,9 +125,9 @@ Metadata:
       Namespace:
         default: IBM Security Guardium Insights namespace
       AdminUsername:
-        default: Administrator username
+        default: Admin username
       AdminPassword:
-        default: Administrator password
+        default: Admin password
       RepositoryPassword:
         default: Repository password
       HostName:
@@ -153,44 +153,44 @@ Metadata:
 Parameters:
   NumberOfAZs:
     AllowedValues:
-      - '1'
-    Default: '1'
+      - "1"
+    Default: "1"
     Description: >-
-      Number of Availability Zones used for the IBM Security Guardium Insights deployment.
+      The number of Availability Zone used for the deployment of IBM Security Guardium Insights.
     Type: String
   AvailabilityZones:
-    Description: The list of Availability Zones to use for the subnet in the VPC. The Quick Start uses one Availability Zone.
+    Description: The list of Availability Zones to use for the subnet in the VPC. The Quick Start uses one Availability Zones and preserves the logical order that you specify.
     Type: List<AWS::EC2::AvailabilityZone::Name>
   VPCCIDR:
     AllowedPattern: ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/(1[6-9]|2[0-8]))$
-    ConstraintDescription: CIDR block notation must follow the format "x.x.x.x/16–28".
-    Default: '10.0.0.0/16'
+    ConstraintDescription: CIDR block parameter must be in the form x.x.x.x/16-28.
+    Default: "10.0.0.0/16"
     Description: CIDR block for the VPC.
     Type: String
   PrivateSubnet1CIDR:
     AllowedPattern: ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/(1[6-9]|2[0-8]))$
-    ConstraintDescription: CIDR block notation must follow the format "x.x.x.x/16–28".
-    Default: '10.0.0.0/19'
-    Description: CIDR block for the private subnet located in Availability Zone 1.
+    ConstraintDescription: CIDR block parameter must be in the form x.x.x.x/16-28.
+    Default: "10.0.0.0/19"
+    Description: The CIDR block for the private subnet located in Availability Zone 1.
     Type: String
   PublicSubnet1CIDR:
     AllowedPattern: ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/(1[6-9]|2[0-8]))$
-    ConstraintDescription: CIDR block notation must follow the format "x.x.x.x/16–28".
-    Default: '10.0.128.0/20'
-    Description: CIDR block for the public subnet located in Availability Zone 1.
+    ConstraintDescription: CIDR block parameter must be in the form x.x.x.x/16-28.
+    Default: "10.0.128.0/20"
+    Description: The CIDR block for the public subnet located in Availability Zone 1.
     Type: String
   BootNodeAccessCIDR:
     AllowedPattern: ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/([0-9]|[1-2][0-9]|3[0-2]))$
-    ConstraintDescription: CIDR block notation must follow the format "x.x.x.x/x".
-    Description:  CIDR IP range that is permitted to access the boot node instance. Set this value to a trusted IP range. The value "0.0.0.0/0" permits access to all IP addresses. Additional values can be added from the Amazon EC2 console after deployment.
+    ConstraintDescription: CIDR block parameter must be in the form x.x.x.x/x.
+    Description: The CIDR IP range that is permitted to access the boot node instance. Set this value to a trusted IP range. The value `0.0.0.0/0` permits access to all IP addresses. Additional values can be added post-deployment from the Amazon EC2 console.
     Type: String
   DomainName:
     AllowedPattern: ^(\S+)$
     ConstraintDescription: Must contain a valid base domain.
-    Description: Amazon Route 53 base domain configured for your Red Hat OpenShift Container Platform cluster. Must be a valid base domain (for example, "example.com").
+    Description: Amazon Route 53 base domain configured for your Red Hat OpenShift Container Platform cluster. Must be a valid base domain (e.g., example.com).
     Type: String
   KeyPairName:
-    Description: Name of an existing public/private key pair, which allows you to securely connect to your instance after it launches. If you do not have a key pair in this AWS Region, create one before continuing.
+    Description: Name of an existing public/private key pair, which allows you to securely connect to your instance after it launches. If you do not have one in this AWS Region, please create it before continuing.
     Type: AWS::EC2::KeyPair::KeyName
   GIProductionSize:
     AllowedValues:
@@ -198,15 +198,18 @@ Parameters:
       - small
       - med
       - large
+      - xlarge
     Default: small
     Description: >-
-      Size of your IBM Security Guardium Insights production.
+      Size of your IBM Security Guardium Insights production. Choose xsmall if you want to deploy IBM Security Guardium Insights extra small production.
+      Choose small if you want to deploy IBM Security Guardium Insights small production. Choose med if you want to deploy IBM Security Guardium Insights medium production.
+      Choose large if you want to deploy IBM Security Guardium Insights large production. Choose xlarge if you want to deploy IBM Security Guardium Insights xlarge production.
     Type: String
   NumberOfMaster:
     AllowedValues:
       - 3
     Default: 3
-    Description: Desired number of control plane node instances.
+    Description: The desired capacity for the Red Hat Openshift Container Platform master node instances.
     Type: Number
   NumberOfGINodes:
     AllowedValues:
@@ -216,22 +219,27 @@ Parameters:
       - 5
     Default: 3
     Description: >-
-      Desired number of Guardium Insights node instances. Choose "2" if the Guardium Insights production size is extra small. Choose "3" if the production size is small. Choose "4" if the production size is medium. Choose "5" if the production size is large. Note: If the number of compute node instances exceeds your Red Hat entitlement limits or AWS instance limits, the stack will fail. Choose a number that is within your limits.
+      The desired capacity for the Guardium Insights node instances. Choose 2 if the IBM Security Guardium Insights production size is extra small.
+      Choose 3 if the IBM Security Guardium Insights production size is small. Choose 4 if the IBM Security Guardium Insights production size is medium. Choose 5 if the IBM Security Guardium Insights production size is large or xlarge.
+      Note: If the number of compute node instances exceeds your Red Hat entitlement limits or AWS instance limits, the stack will fail. Choose a number that is within your limits.
     Type: Number
   NumberOfDb2DataNodes:
     AllowedValues:
       - 1
       - 2
       - 3
+      - 5
     Default: 2
     Description: >-
-      Desired number of IBM Db2 data node instances. Choose "1" if the Guardium Insights production size is extra small. Choose "2" if the production size is small. Choose "3" if the production size is medium or large. Note: If the number of compute node instances exceeds your Red Hat entitlement limits or AWS instance limits, the stack will fail. Choose a number that is within your limits.
+      The desired capacity for the Db2 data node instances. Choose 1 if the IBM Security Guardium Insights production size is extra small.
+      Choose 2 if the IBM Security Guardium Insights production size is small. Choose 3 if the IBM Security Guardium Insights production size is medium or large. Choose 5 if the IBM Security Guardium Insights production size is xlarge.
+      Note: If the number of compute node instances exceeds your Red Hat entitlement limits or AWS instance limits, the stack will fail. Choose a number that is within your limits.
     Type: Number
   MasterInstanceType:
     AllowedValues:
       - m5.2xlarge
     Default: m5.2xlarge
-    Description: EC2 instance type for the Red Hat OpenShift Container Platform control plane node instances. Instance must have 8 cores CPU, 16 GB RAM, and 120 GB storage.
+    Description: The EC2 instance type for the Red Hat Openshift Container Platform master node instances. Instance must have 8 cores CPU, 16 GB RAM and 120 GB storage.
     Type: String
   GINodeInstanceType:
     AllowedValues:
@@ -239,7 +247,9 @@ Parameters:
       - m5.8xlarge
     Default: m5.4xlarge
     Description: >-
-      EC2 instance type for the Guardium Insights node instances. Choose "m5.4xlarge" (16 cores CPU, 64 GB RAM, 120 GB storage) if the Guardium Insights production size is small, medium or large. Choose "m5.8xlarge" (32 cores CPU, 128 GB RAM, 120 GB storage) if the production size is extra small.
+      The EC2 instance type for the Guardium Insights node instances.
+      Choose m5.4xlarge (16 cores CPU, 64 GB RAM, 120 GB storage) if the IBM Security Guardium Insights production size is small, medium, large or xlarge.
+      Choose m5.8xlarge (32 cores CPU, 128 GB RAM, 120 GB storage) if the IBM Security Guardium Insights production size is extra small.
     Type: String
   Db2DataNodeInstanceType:
     AllowedValues:
@@ -248,23 +258,25 @@ Parameters:
       - m5.16xlarge
     Default: m5.4xlarge
     Description: >-
-      EC2 instance type for the Db2 data node instances. Choose "m5.4xlarge" (16 cores CPU, 64 GB RAM, 120 GB storage) if the Guardium Insights production size is small. Choose "m5.8xlarge" (32 cores CPU, 128 GB RAM, 120 GB storage) if the production size is extra small or medium. Choose "m5.16xlarge" (64 cores CPU, 256 GB RAM, 120 GB storage) if the production size is large.
+      The EC2 instance type for the Db2 Data node instances. Choose m5.4xlarge (16 cores CPU, 64 GB RAM, 120 GB storage) if the IBM Security Guardium Insights production size is small.
+      Choose m5.8xlarge (32 cores CPU, 128 GB RAM, 120 GB storage) if the IBM Security Guardium Insights production size is extra small or medium.
+      Choose m5.16xlarge (64 cores CPU, 256 GB RAM, 120 GB storage) if the IBM Security Guardium Insights production size is large or xlarge.
     Type: String
   ClusterName:
     AllowedPattern: ^[0-9a-z-.]*$
-    ConstraintDescription: Must contain valid cluster name. The name must start with a letter, and can contain letters, numbers, periods (.), and hyphen (-).
-    Description: Red Hat OpenShift Container Platform cluster name. The name must start with a letter and can contain letters, numbers, periods (.), and hyphens (-). Use a name that is unique across Regions.
+    ConstraintDescription: Must contain valid cluster name. The name must start with a letter, can contain letters, numbers, periods (.), and hyphen (-).
+    Description: Name of your Red Hat Openshift Container Platform cluster. The name must start with a letter, can contain letters, numbers, periods (.), and hyphen (-). Use a name that is unique across Regions.
     Type: String
   RedhatPullSecret:
     AllowedPattern: ^s3:\/\/+[0-9a-z-.\/]*$
-    ConstraintDescription: Must contain a valid S3 URI path of Red Hat OpenShift Installer Provisioned Infrastructure pull secret (for example, "s3://my-bucket/path/to/pull-secret").
-    Description: S3 URI path of Red Hat OpenShift Installer Provisioned Infrastructure pull secret (for example, "s3://my-bucket/path/to/pull-secret").
+    ConstraintDescription: Must contain a valid S3 URI path of Red Hat OpenShift Installer Provisioned Infrastructure pull secret (e.g., s3://my-bucket/path/to/pull-secret).
+    Description: S3 URI path of Red Hat OpenShift Installer Provisioned Infrastructure pull secret (e.g., s3://my-bucket/path/to/pull-secret).
     Type: String
   StorageType:
     AllowedValues:
-      - 'OCS'
-    Default: 'OCS'
-    Description: OpenShift Container Storage (OCS) as default storage class.
+      - "OCS"
+    Default: "OCS"
+    Description: Openshift Container Storage (OCS) as default Storage class.
     Type: String
   NumberOfOCS:
     AllowedValues:
@@ -272,218 +284,242 @@ Parameters:
       - 5
     Default: 3
     Description: >-
-      Desired number of OpenShift container storage node instances. Choose "3" for an extra small or small Guardium Insights production deployment. Choose "5" for a medium or large production deployment.
+      The desired capacity for the OpenShift container storage node instances. Choose 3 if the IBM Security Guardium Insights production size is extra small, small or xlarge.
+      Choose 5 if the IBM Security Guardium Insights production size is medium or large.
     Type: Number
   OCSInstanceType:
     AllowedValues:
       - m5.4xlarge
-    ConstraintDescription: Must contain a valid instance type. Instance must have 8 cores CPU, 16 GB RAM, and 120 GB storage.
+    ConstraintDescription: Must contain a valid instance type. Instance must have 8 cores CPU, 16 GB RAM and 120 GB storage.
     Default: m5.4xlarge
-    Description: EC2 instance type for the OpenShift Container Storage instances.
+    Description: The EC2 instance type for the OpenShift Container Storage instances.
     Type: String
   LicenseAgreement:
     AllowedValues:
-      - 'I agree'
-      - '-'
-    ConstraintDescription: You must agree to the license terms for IBM Security Guardium Insights to continue.
-    Default: '-'
-    Description: Choose "I agree" to confirm that you have read the IBM Security Guardium Insights license and accept the terms.
+      - "I agree"
+      - "-"
+    ConstraintDescription: Agree to the license terms for IBM Security Guardium Insights.
+    Default: "-"
+    Description: By accepting the license agreement you confirm that you read the license and accept the terms for IBM Security Guardium Insights.
     Type: String
   LicenseType:
     AllowedValues:
-      - 'L-TESX-C86NC4 (IBM Security Guardium Insights for IBM Cloud Pak for Security (Gen 3))'
-      - 'L-TESX-C86NKZ (IBM Security Guardium Insights)'
-      - 'L-TESX-C86NM4 (IBM Security Guardium Insights for Guardium Data Protection for z/OS)'
-      - 'L-TESX-C86NPQ (IBM Security Guardium Insights for IBM Cloud Pak for Security)'
-    Default: 'L-TESX-C86NC4 (IBM Security Guardium Insights for IBM Cloud Pak for Security (Gen 3))'
+      - "L-TESX-C86NC4 (IBM Security Guardium Insights for IBM Cloud Pak for Security (Gen 3))"
+      - "L-TESX-C86NKZ (IBM Security Guardium Insights)"
+      - "L-TESX-C86NM4 (IBM Security Guardium Insights for Guardium Data Protection for z/OS)"
+      - "L-TESX-C86NPQ (IBM Security Guardium Insights for IBM Cloud Pak for Security)"
+    Default: "L-TESX-C86NC4 (IBM Security Guardium Insights for IBM Cloud Pak for Security (Gen 3))"
     Description: IBM Security Guardium Insights license types.
     Type: String
   GIVersion:
     AllowedValues:
-      - '3.1.8'
-    Default: '3.1.8'
-    Description: Version of IBM Security Guardium Insights to be deployed.
+      - "3.1.10"
+      - "3.1.11"
+    Default: "3.1.10"
+    Description: The version of IBM Security Guardium Insights to be deployed.
     Type: String
   Namespace:
-    ConstraintDescription: IBM Security Guardium Insights namespace must be 3–10 characters in length.
-    Description: OpenShift project where IBM Security Guardium Insights is deployed.
+    ConstraintDescription: IBM Security Guardium Insights namespace must between 3-10 characters in length.
+    Description: The OpenShift project where IBM Security Guardium Insights will be deployed.
     MaxLength: 10
     MinLength: 3
     Type: String
   RepositoryPassword:
     AllowedPattern: ^(\S+)$
-    ConstraintDescription: A IBM Entitled Registry password is required.
-    Description: IBM Entitled Registry password.
+    ConstraintDescription: Must contain password to access IBM Entitled Registry.
+    Description: The password to access IBM Entitled Registry.
     Type: String
-    NoEcho: 'true'
+    NoEcho: "true"
   AdminUsername:
-    Default: 'gi-admin'
-    ConstraintDescription: The administrator username must be 3-32 characters in length.
-    Description: User with administrator privileges in IBM Security Guardium Insights. The administrator username must be 3–32 characters in length.
+    Default: "gi-admin"
+    ConstraintDescription: The Admin username must between 3-32 characters in length.
+    Description: The admin user who will be given administrative privileges in the IBM Security Guardium Insights. The Admin username must between 3-32 characters in length.
     MaxLength: 32
     MinLength: 3
     Type: String
   AdminPassword:
-    Default: ''
+    Default: ""
     Description: >-
-      (Optional) Password for accessing the IBM Security Guardium Insights platform. If no password is provided, the default password generated during deployment can be retrieved from "GIAdminSecret" resource.
+      (Optional) The password for accessing the IBM Security Guardium Insights platform.
+      If no password is provided, the default password generated during the deployment can be retrieved from 'GIAdminSecret' resource.
     Type: String
-    NoEcho: 'true'
+    NoEcho: "true"
   HostName:
-    Default: ''
+    Default: ""
     Description: Host name for the IBM Security Guardium Insights application.
     Type: String
   IngressKeyFile:
     AllowedPattern: ^(|s3:\/\/+[0-9a-z-.\/]*)$
-    ConstraintDescription: Must be a valid S3 URI path of the TLS certificate file that is associated with the IBM Security Guardium Insights application domain (for example, "s3://my-bucket/path/to/cert").
-    Default: ''
-    Description: (Optional) S3 URI path of the TLS certificate file that is associated with the IBM Security Guardium Insights application domain (for example, "s3://my-bucket/path/to/cert").
+    ConstraintDescription: Must be a valid S3 URI path of the TLS certificate file that is associated with the IBM Security Guardium Insights application domain (e.g., s3://my-bucket/path/to/cert).
+    Default: ""
+    Description: (Optional) S3 URI path of the TLS certificate file that is associated with the IBM Security Guardium Insights application domain (e.g., s3://my-bucket/path/to/cert).
     Type: String
   IngressCertFile:
     AllowedPattern: ^(|s3:\/\/+[0-9a-z-.\/]*)$
-    ConstraintDescription: Must be a valid S3 URI path of the TLS key file that is associated with the IBM Security Guardium Insights application domain (for example, "s3://my-bucket/path/to/cert").
-    Default: ''
-    Description: (Optional) S3 URI path of the TLS key file that is associated with the IBM Security Guardium Insights application domain (for example, "s3://my-bucket/path/to/cert").
+    ConstraintDescription: Must be a valid S3 URI path of the TLS key file that is associated with the IBM Security Guardium Insights application domain (e.g., s3://my-bucket/path/to/cert).
+    Default: ""
+    Description: (Optional) S3 URI path of the TLS key file that is associated with the IBM Security Guardium Insights application domain (e.g., s3://my-bucket/path/to/cert).
     Type: String
   IngressCAFile:
     AllowedPattern: ^(|s3:\/\/+[0-9a-z-.\/]*)$
-    ConstraintDescription: Must be a valid S3 URI path of the custom TLS certificate file that is associated with the IBM Security Guardium Insights application domain (for example, "s3://my-bucket/path/to/cert").
-    Default: ''
-    Description: (Optional) S3 URI path of the custom TLS certificate file that is associated with the IBM Security Guardium Insights application domain (for example, "s3://my-bucket/path/to/cert").
+    ConstraintDescription: Must be a valid S3 URI path of the custom TLS certificate file that is associated with the IBM Security Guardium Insights application domain (e.g., s3://my-bucket/path/to/cert).
+    Default: ""
+    Description: (Optional) S3 URI path of the custom TLS certificate file that is associated with the IBM Security Guardium Insights application domain (e.g., s3://my-bucket/path/to/cert).
     Type: String
   StorageClassRWO:
     AllowedValues:
-      - 'gp2'
-    Default: 'gp2'
-    Description: Read-write-only (RWO) storage class for using IBM Security Guardium Insights.
+      - "gp2"
+    Default: "gp2"
+    Description: Storage classes read-write-only (RWO) defined for using IBM Security Guardium Insights.
     Type: String
   StorageClassRWX:
     AllowedValues:
-      - 'ocs-storagecluster-cephfs'
-    Default: 'ocs-storagecluster-cephfs'
-    Description: Read-write-many (RWX) storage class for using IBM Security Guardium Insights.
+      - "ocs-storagecluster-cephfs"
+    Default: "ocs-storagecluster-cephfs"
+    Description: Storage classes read-write-many (RWX) defined for using IBM Security Guardium Insights.
     Type: String
   GIDeploymentLogsBucketName:
     AllowedPattern: ^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$
-    ConstraintDescription: S3 bucket name must be 3–63 characters. It can include numbers, lowercase letters, and hyphens (-), but cannot start or end with a hyphen (-).
+    ConstraintDescription: The IBM Security Guardium Insights deployment logs bucket name can include numbers, lowercase letters, uppercase letters, and hyphens (-) and must be between 3 (min) and 63 (max) characters long. It cannot start or end with a hyphen (-).
     Description: >-
-      Name of the S3 bucket for IBM Security Guardium Insights deployment logs. This S3 bucket is created with the stack. Deployment logs contain a record of bootstrap scripting actions and are useful for troubleshooting failed deployments. S3 bucket name must be 3–63 characters. It can include numbers, lowercase letters, and hyphens (-), but cannot start or end with a hyphen (-).
+      The name of the S3 bucket where IBM Security Guardium Insights deployment logs are to be exported. This S3 bucket will be created during the stack creation process. The deployment logs provide a record of the boot strap scripting actions and are useful for problem determination if the deployment fails in some way.
+      This name can include numbers, lowercase letters, uppercase letters, and hyphens, but do not start or end with a hyphen (-). Bucket names must be between 3 (min) and 63 (max) characters long.
     MaxLength: 63
     MinLength: 3
     Type: String
   QSS3BucketName:
-    AllowedPattern: '[0-9a-z-]*$'
-    ConstraintDescription: S3 bucket name must be 3–63 characters. It can include numbers, lowercase letters, and hyphens (-), but cannot start or end with a hyphen (-).
+    AllowedPattern: ^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$
+    ConstraintDescription: The Quick Start bucket name can include numbers, lowercase letters, uppercase letters, and hyphens (-) and must be between 3 (min) and 63 (max) characters long. It cannot start or end with a hyphen (-).
     Description: >-
-      Name of the S3 bucket for your copy of the deployment assets. Keep the default name unless you are customizing the template. Changing the name updates code references to point to a new location.
+      Name of the S3 bucket for your copy of the Quick Start assets. Do not change the default value unless you are customizing the deployment. Changing the name updates code references to point to a new Quick Start location.
+      This name can include numbers, lowercase letters, uppercase letters, and hyphens, but do not start or end with a hyphen (-). Bucket names must be between 3 (min) and 63 (max) characters long. To know how you can customize the deployment, see https://aws-quickstart.github.io/option1.html.
     MaxLength: 63
     MinLength: 3
-    Default: 'aws-quickstart'
+    Default: "aws-quickstart"
     Type: String
   QSS3BucketRegion:
-    Default: 'us-east-1'
-    Description: 'AWS Region where the S3 bucket (QSS3BucketName) is hosted. Keep the default Region unless you are customizing the template. Changing the Region updates code references to point to a new location. When using your own bucket, specify the Region.'
+    Default: "us-east-1"
+    Description: The AWS Region where the Quick Start S3 bucket (QSS3BucketName) is hosted. Do not change the default value unless you are customizing the deployment. To know how you can customize the deployment, see https://aws-quickstart.github.io/option1.html.
     Type: String
   QSS3KeyPrefix:
-    AllowedPattern: '^[0-9a-zA-Z-/]*$'
-    ConstraintDescription:
-      The S3 key prefix can include numbers, lowercase letters, uppercase letters,
-      hyphens (-), and forward slashes (/). End the prefix with a forward slash.
+    AllowedPattern: ^([0-9a-zA-Z-.]+/)*$
+    ConstraintDescription: The Quick Start S3 key prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and forward slashes (/).
     Default: quickstart-ibm-security-guardium-insights/
-    Description:
-      S3 key prefix that is used to simulate a folder for your copy of the deployment assets. Keep the default prefix unless you are customizing the template. Changing the prefix updates code references to point to a new location.
+    Description: >-
+      S3 key prefix that is used to simulate a directory for your copy of the Quick Start assets. Do not change the default value unless you are customizing the deployment.
+      Changing this prefix updates code references to point to a new Quick Start location. This prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and forward slashes (/). Must end with a forward slash,
+      see https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingMetadata.html. To know how you can customize the deployment, see https://aws-quickstart.github.io/option1.html.
     Type: String
 Rules:
   AdminUsernameRule:
     Assertions:
-    - Assert:
-        Fn::Not : [{"Fn::Equals" : [{"Ref" : "AdminUsername"}, "admin"]}]
-      AssertDescription: Value cannot be 'admin'.
+      - Assert:
+          Fn::Not: [{ "Fn::Equals": [{ "Ref": "AdminUsername" }, "admin"] }]
+        AssertDescription: Value cannot be 'admin'.
   LicenseAgreementRule:
     Assertions:
-    - Assert:
-        Fn::Contains:
-        - - I agree
-        - Ref: LicenseAgreement
-      AssertDescription: User must agree to the terms of the license agreement.
+      - Assert:
+          Fn::Contains:
+            - - I agree
+            - Ref: LicenseAgreement
+        AssertDescription: User must agree to the terms of the license agreement.
   XsmallProductionSizeRule:
     RuleCondition:
-      Fn::Equals : [{"Ref" : "GIProductionSize"}, "xsmall"]
+      Fn::Equals: [{ "Ref": "GIProductionSize" }, "xsmall"]
     Assertions:
       - Assert:
-          Fn::Equals : [{"Ref" : "NumberOfGINodes"}, "2"]
+          Fn::Equals: [{ "Ref": "NumberOfGINodes" }, "2"]
         AssertDescription: Number of Guardium Insights nodes must be 2 for xsmall production size.
       - Assert:
-          Fn::Equals : [{"Ref" : "NumberOfDb2DataNodes"}, "1"]
+          Fn::Equals: [{ "Ref": "NumberOfDb2DataNodes" }, "1"]
         AssertDescription: Number of Db2 data nodes must be 1 for xsmall production size.
       - Assert:
-          Fn::Equals : [{"Ref" : "GINodeInstanceType"}, "m5.8xlarge"]
+          Fn::Equals: [{ "Ref": "GINodeInstanceType" }, "m5.8xlarge"]
         AssertDescription: Guardium Insights node instance type must be 'm5.8xlarge' for xsmall production size.
       - Assert:
-          Fn::Equals : [{"Ref" : "Db2DataNodeInstanceType"}, "m5.8xlarge"]
+          Fn::Equals: [{ "Ref": "Db2DataNodeInstanceType" }, "m5.8xlarge"]
         AssertDescription: Db2 data node instance type must be 'm5.8xlarge' for xsmall production size.
       - Assert:
-          Fn::Equals : [{"Ref" : "NumberOfOCS"}, "3"]
+          Fn::Equals: [{ "Ref": "NumberOfOCS" }, "3"]
         AssertDescription: Number of OCS nodes must be 3 for xsmall production size.
   SmallProductionSizeRule:
     RuleCondition:
-      Fn::Equals : [{"Ref" : "GIProductionSize"}, "small"]
+      Fn::Equals: [{ "Ref": "GIProductionSize" }, "small"]
     Assertions:
       - Assert:
-          Fn::Equals : [{"Ref" : "NumberOfGINodes"}, "3"]
+          Fn::Equals: [{ "Ref": "NumberOfGINodes" }, "3"]
         AssertDescription: Number of Guardium Insights nodes must be 3 for small production size.
       - Assert:
-          Fn::Equals : [{"Ref" : "NumberOfDb2DataNodes"}, "2"]
+          Fn::Equals: [{ "Ref": "NumberOfDb2DataNodes" }, "2"]
         AssertDescription: Number of Db2 data nodes must be 2 for small production size.
       - Assert:
-          Fn::Equals : [{"Ref" : "GINodeInstanceType"}, "m5.4xlarge"]
+          Fn::Equals: [{ "Ref": "GINodeInstanceType" }, "m5.4xlarge"]
         AssertDescription: Guardium Insights node instance type must be 'm5.4xlarge' for small production size.
       - Assert:
-          Fn::Equals : [{"Ref" : "Db2DataNodeInstanceType"}, "m5.4xlarge"]
+          Fn::Equals: [{ "Ref": "Db2DataNodeInstanceType" }, "m5.4xlarge"]
         AssertDescription: Db2 data node instance type must be 'm5.4xlarge' for small production size.
       - Assert:
-          Fn::Equals : [{"Ref" : "NumberOfOCS"}, "3"]
+          Fn::Equals: [{ "Ref": "NumberOfOCS" }, "3"]
         AssertDescription: Number of OCS nodes must be 3 for small production size.
   MediumProductionSizeRule:
     RuleCondition:
-      Fn::Equals : [{"Ref" : "GIProductionSize"}, "med"]
+      Fn::Equals: [{ "Ref": "GIProductionSize" }, "med"]
     Assertions:
       - Assert:
-          Fn::Equals : [{"Ref" : "NumberOfGINodes"}, "4"]
+          Fn::Equals: [{ "Ref": "NumberOfGINodes" }, "4"]
         AssertDescription: Number of Guardium Insights nodes must be 4 for med production size.
       - Assert:
-          Fn::Equals : [{"Ref" : "NumberOfDb2DataNodes"}, "3"]
+          Fn::Equals: [{ "Ref": "NumberOfDb2DataNodes" }, "3"]
         AssertDescription: Number of Db2 data nodes must be 3 for med production size.
       - Assert:
-          Fn::Equals : [{"Ref" : "GINodeInstanceType"}, "m5.4xlarge"]
+          Fn::Equals: [{ "Ref": "GINodeInstanceType" }, "m5.4xlarge"]
         AssertDescription: Guardium Insights node instance type must be 'm5.4xlarge' for med production size.
       - Assert:
-          Fn::Equals : [{"Ref" : "Db2DataNodeInstanceType"}, "m5.8xlarge"]
+          Fn::Equals: [{ "Ref": "Db2DataNodeInstanceType" }, "m5.8xlarge"]
         AssertDescription: Db2 data node instance type must be 'm5.8xlarge' for med production size.
       - Assert:
-          Fn::Equals : [{"Ref" : "NumberOfOCS"}, "5"]
+          Fn::Equals: [{ "Ref": "NumberOfOCS" }, "5"]
         AssertDescription: Number of OCS nodes must be 5 for med production size.
   LargeProductionSizeRule:
     RuleCondition:
-      Fn::Equals : [{"Ref" : "GIProductionSize"}, "large"]
+      Fn::Equals: [{ "Ref": "GIProductionSize" }, "large"]
     Assertions:
       - Assert:
-          Fn::Equals : [{"Ref" : "NumberOfGINodes"}, "5"]
+          Fn::Equals: [{ "Ref": "NumberOfGINodes" }, "5"]
         AssertDescription: Number of Guardium Insights nodes must be 5 for large production size.
       - Assert:
-          Fn::Equals : [{"Ref" : "NumberOfDb2DataNodes"}, "3"]
+          Fn::Equals: [{ "Ref": "NumberOfDb2DataNodes" }, "3"]
         AssertDescription: Number of Db2 data nodes must be 3 for large production size.
       - Assert:
-          Fn::Equals : [{"Ref" : "GINodeInstanceType"}, "m5.4xlarge"]
+          Fn::Equals: [{ "Ref": "GINodeInstanceType" }, "m5.4xlarge"]
         AssertDescription: Guardium Insights node instance type must be 'm5.4xlarge' for large production size.
       - Assert:
-          Fn::Equals : [{"Ref" : "Db2DataNodeInstanceType"}, "m5.16xlarge"]
+          Fn::Equals: [{ "Ref": "Db2DataNodeInstanceType" }, "m5.16xlarge"]
         AssertDescription: Db2 data node instance type must be 'm5.16xlarge' for large production size.
       - Assert:
-          Fn::Equals : [{"Ref" : "NumberOfOCS"}, "5"]
+          Fn::Equals: [{ "Ref": "NumberOfOCS" }, "5"]
         AssertDescription: Number of OCS nodes must be 5 for large production size.
+  XLargeProductionSizeRule:
+    RuleCondition:
+      Fn::Equals: [{ "Ref": "GIProductionSize" }, "xlarge"]
+    Assertions:
+      - Assert:
+          Fn::Equals: [{ "Ref": "NumberOfGINodes" }, "5"]
+        AssertDescription: Number of Guardium Insights nodes must be 5 for xlarge production size.
+      - Assert:
+          Fn::Equals: [{ "Ref": "NumberOfDb2DataNodes" }, "5"]
+        AssertDescription: Number of Db2 data nodes must be 5 for xlarge production size.
+      - Assert:
+          Fn::Equals: [{ "Ref": "GINodeInstanceType" }, "m5.4xlarge"]
+        AssertDescription: Guardium Insights node instance type must be 'm5.4xlarge' for xlarge production size.
+      - Assert:
+          Fn::Equals: [{ "Ref": "Db2DataNodeInstanceType" }, "m5.16xlarge"]
+        AssertDescription: Db2 data node instance type must be 'm5.16xlarge' for xlarge production size.
+      - Assert:
+          Fn::Equals: [{ "Ref": "NumberOfOCS" }, "3"]
+        AssertDescription: Number of OCS nodes must be 3 for xlarge production size.
 Conditions:
-  UsingDefaultBucket: !Equals [!Ref QSS3BucketName, 'aws-quickstart']
+  UsingDefaultBucket: !Equals [!Ref QSS3BucketName, "aws-quickstart"]
 Resources:
   VPCStack:
     Type: AWS::CloudFormation::Stack
@@ -491,78 +527,87 @@ Resources:
       TemplateURL: !Sub
         - >-
           https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/aws-vpc.template.yaml
-        - S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
-          S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
+        - S3Bucket:
+            !If [
+              UsingDefaultBucket,
+              !Sub "${QSS3BucketName}-${AWS::Region}",
+              !Ref QSS3BucketName,
+            ]
+          S3Region:
+            !If [UsingDefaultBucket, !Ref "AWS::Region", !Ref QSS3BucketRegion]
       Parameters:
         NumberOfAZs: !Ref NumberOfAZs
-        AvailabilityZones: !Join [ ',', !Ref 'AvailabilityZones']
-        VPCCIDR: !Ref 'VPCCIDR'
-        PrivateSubnet1ACIDR: !Ref 'PrivateSubnet1CIDR'
-        PrivateSubnetATag2: !Sub 'kubernetes.io/cluster/${AWS::StackName}-${AWS::Region}=owned'
-        PrivateSubnetATag3: 'kubernetes.io/role/internal-elb='
-        PublicSubnet1CIDR: !Ref 'PublicSubnet1CIDR'
-        PublicSubnetTag2: !Sub 'kubernetes.io/cluster/${AWS::StackName}-${AWS::Region}=owned'
-        PublicSubnetTag3: 'kubernetes.io/role/elb='
+        AvailabilityZones: !Join [",", !Ref "AvailabilityZones"]
+        VPCCIDR: !Ref "VPCCIDR"
+        PrivateSubnet1ACIDR: !Ref "PrivateSubnet1CIDR"
+        PrivateSubnetATag2: !Sub "kubernetes.io/cluster/${AWS::StackName}-${AWS::Region}=owned"
+        PrivateSubnetATag3: "kubernetes.io/role/internal-elb="
+        PublicSubnet1CIDR: !Ref "PublicSubnet1CIDR"
+        PublicSubnetTag2: !Sub "kubernetes.io/cluster/${AWS::StackName}-${AWS::Region}=owned"
+        PublicSubnetTag3: "kubernetes.io/role/elb="
   GuardiumInsightsStack:
     Type: AWS::CloudFormation::Stack
     Properties:
       TemplateURL: !Sub
         - >-
           https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/ibm-security-guardium-insights.template.yaml
-        - S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
-          S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
+        - S3Bucket:
+            !If [
+              UsingDefaultBucket,
+              !Sub "${QSS3BucketName}-${AWS::Region}",
+              !Ref QSS3BucketName,
+            ]
+          S3Region:
+            !If [UsingDefaultBucket, !Ref "AWS::Region", !Ref QSS3BucketRegion]
       Parameters:
-        NumberOfAZs: !Ref 'NumberOfAZs'
-        AvailabilityZones: !Join [ ',', !Ref 'AvailabilityZones']
-        VPCID: !GetAtt 'VPCStack.Outputs.VPCID'
-        VPCCIDR: !Ref 'VPCCIDR'
-        PrivateSubnet1ID: !GetAtt 'VPCStack.Outputs.PrivateSubnet1AID'
-        PublicSubnet1ID: !GetAtt 'VPCStack.Outputs.PublicSubnet1ID'
-        BootNodeAccessCIDR: !Ref 'BootNodeAccessCIDR'
-        DomainName: !Ref 'DomainName'
-        KeyPairName: !Ref 'KeyPairName'
-        GIProductionSize: !Ref 'GIProductionSize'
-        NumberOfMaster: !Ref 'NumberOfMaster'
-        NumberOfGINodes: !Ref 'NumberOfGINodes'
-        NumberOfDb2DataNodes: !Ref 'NumberOfDb2DataNodes'
-        MasterInstanceType: !Ref 'MasterInstanceType'
-        GINodeInstanceType: !Ref 'GINodeInstanceType'
-        Db2DataNodeInstanceType: !Ref 'Db2DataNodeInstanceType'
-        ClusterName: !Ref 'ClusterName'
-        RedhatPullSecret: !Ref 'RedhatPullSecret'
-        StorageType: !Ref 'StorageType'
-        NumberOfOCS: !Ref 'NumberOfOCS'
-        OCSInstanceType: !Ref 'OCSInstanceType'
-        LicenseAgreement: !Ref 'LicenseAgreement'
-        LicenseType: !Ref 'LicenseType'
-        GIVersion: !Ref 'GIVersion'
-        AdminUsername: !Ref 'AdminUsername'
-        AdminPassword: !Ref 'AdminPassword'
-        Namespace: !Ref 'Namespace'
-        RepositoryPassword: !Ref 'RepositoryPassword'
-        HostName: !Ref 'HostName'
-        IngressKeyFile: !Ref 'IngressKeyFile'
-        IngressCertFile: !Ref 'IngressCertFile'
-        IngressCAFile: !Ref 'IngressCAFile'
-        StorageClassRWO: !Ref 'StorageClassRWO'
-        StorageClassRWX: !Ref 'StorageClassRWX'
-        GIDeploymentLogsBucketName: !Ref 'GIDeploymentLogsBucketName'
-        QSS3BucketName: !Ref 'QSS3BucketName'
-        QSS3BucketRegion: !Ref 'QSS3BucketRegion'
-        QSS3KeyPrefix: !Ref 'QSS3KeyPrefix'
+        NumberOfAZs: !Ref "NumberOfAZs"
+        AvailabilityZones: !Join [",", !Ref "AvailabilityZones"]
+        VPCID: !GetAtt "VPCStack.Outputs.VPCID"
+        VPCCIDR: !Ref "VPCCIDR"
+        PrivateSubnet1ID: !GetAtt "VPCStack.Outputs.PrivateSubnet1AID"
+        PublicSubnet1ID: !GetAtt "VPCStack.Outputs.PublicSubnet1ID"
+        BootNodeAccessCIDR: !Ref "BootNodeAccessCIDR"
+        DomainName: !Ref "DomainName"
+        KeyPairName: !Ref "KeyPairName"
+        GIProductionSize: !Ref "GIProductionSize"
+        NumberOfMaster: !Ref "NumberOfMaster"
+        NumberOfGINodes: !Ref "NumberOfGINodes"
+        NumberOfDb2DataNodes: !Ref "NumberOfDb2DataNodes"
+        MasterInstanceType: !Ref "MasterInstanceType"
+        GINodeInstanceType: !Ref "GINodeInstanceType"
+        Db2DataNodeInstanceType: !Ref "Db2DataNodeInstanceType"
+        ClusterName: !Ref "ClusterName"
+        RedhatPullSecret: !Ref "RedhatPullSecret"
+        StorageType: !Ref "StorageType"
+        NumberOfOCS: !Ref "NumberOfOCS"
+        OCSInstanceType: !Ref "OCSInstanceType"
+        LicenseAgreement: !Ref "LicenseAgreement"
+        LicenseType: !Ref "LicenseType"
+        GIVersion: !Ref "GIVersion"
+        AdminUsername: !Ref "AdminUsername"
+        AdminPassword: !Ref "AdminPassword"
+        Namespace: !Ref "Namespace"
+        RepositoryPassword: !Ref "RepositoryPassword"
+        HostName: !Ref "HostName"
+        IngressKeyFile: !Ref "IngressKeyFile"
+        IngressCertFile: !Ref "IngressCertFile"
+        IngressCAFile: !Ref "IngressCAFile"
+        StorageClassRWO: !Ref "StorageClassRWO"
+        StorageClassRWX: !Ref "StorageClassRWX"
+        GIDeploymentLogsBucketName: !Ref "GIDeploymentLogsBucketName"
+        QSS3BucketName: !Ref "QSS3BucketName"
+        QSS3BucketRegion: !Ref "QSS3BucketRegion"
+        QSS3KeyPrefix: !Ref "QSS3KeyPrefix"
 Outputs:
   BootnodePublicIp:
     Description: The boot node public IP address.
-    Value: !GetAtt 'GuardiumInsightsStack.Outputs.BootnodePublicIp'
+    Value: !GetAtt "GuardiumInsightsStack.Outputs.BootnodePublicIp"
   AdminUsername:
     Description: The username to access the IBM Security Guardium Insights platform.
-    Value: !GetAtt 'GuardiumInsightsStack.Outputs.AdminUsername'
+    Value: !GetAtt "GuardiumInsightsStack.Outputs.AdminUsername"
   OpenShiftWebConsoleURL:
     Description: Red Hat OpenShift Container platform web console URL.
-    Value: !GetAtt 'GuardiumInsightsStack.Outputs.OpenShiftWebConsoleURL'
+    Value: !GetAtt "GuardiumInsightsStack.Outputs.OpenShiftWebConsoleURL"
   GIWebClientURL:
     Description: IBM Security Guardium Insights platform URL.
-    Value: !GetAtt 'GuardiumInsightsStack.Outputs.GIWebClientURL'
-  Postdeployment:
-    Description: See the deployment guide for postdeployment steps.
-    Value: https://fwd.aws/4zzGq?
+    Value: !GetAtt "GuardiumInsightsStack.Outputs.GIWebClientURL"

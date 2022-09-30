@@ -1,0 +1,96 @@
+apiVersion: gi.ds.isc.ibm.com/v1
+kind: GuardiumInsights
+metadata:
+  name: ${namespace}
+  namespace: ${namespace}
+spec:
+  version: ${version}
+  license:
+    accept: true
+    licenseType: ${license-type}
+  guardiumInsightsGlobal:
+    dev: "false"
+    licenseAccept: true
+    size: values-large
+    image:
+      insightsPullSecret: ibm-entitlement-key
+      repository: cp.icr.io/cp/ibm-guardium-insights
+      useTag: "true"
+    insights:
+      ingress:
+        hostName: ${host-name}
+        domainName: ${domain-name}
+      ics:
+        namespace: ibm-common-services
+        registry: common-service
+    storageClassName: ${storage-class-rwx}
+  dependency-db2:
+    image:
+      insightsPullSecret: "ibm-entitlement-key"
+    db2:
+     size: 5
+     resources:
+       requests:
+         cpu: "30"
+         memory: "120Gi"
+       limits:
+         cpu: "50"
+         memory: "220Gi"
+     storage:
+     - name: meta
+       spec:
+         storageClassName: ${storage-class-rwx}
+         accessModes:
+         - ReadWriteMany
+         resources:
+           requests:
+             storage: "4000Gi"
+       type: create
+     - name: data
+       spec:
+         storageClassName: ${storage-class-rwo}
+         accessModes:
+         - ReadWriteOnce
+         resources:
+           requests:
+             storage: "4000Gi"
+       type: template
+     mln:
+       distribution: 0:0
+       total: 10
+  datamart-processor:
+    replicaCount: 10
+  dependency-kafka:
+    kafka:
+      storage:
+        type: persistent-claim
+        size: 250Gi
+        class: ${storage-class-rwo}
+    zookeeper:
+      storage:
+        type: persistent-claim
+        size: 20Gi
+        class: ${storage-class-rwo}
+    kafkatopics:
+      ingest_datamart:
+        partitions: '10'
+        replicationfactor: '2'
+  mini-snif:
+    persistentVolumesClaims:
+      mini-snif-shared:
+        storageClassName: "${storage-class-rwx}"
+  universal-connector-manager:
+    persistentVolumesClaims:
+      universal-connector-manager-shared:
+        storageClassName: "${storage-class-rwx}"
+  settings-datasources:
+    persistentVolumesClaims:
+      settings-datasources:
+        storageClassName: "${storage-class-rwx}"
+  ticketing:
+    persistentVolumesClaims:
+      ticketing-keystore:
+        storageClassName: "${storage-class-rwx}"
+  ssh-service:
+    serviceAnnotations:
+      service.beta.kubernetes.io/aws-load-balancer-internal: "false"

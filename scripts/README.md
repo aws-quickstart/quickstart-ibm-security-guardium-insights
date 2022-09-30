@@ -65,4 +65,4 @@ Check logs in output s3 bucket or in the Boot node EC2 instance.
 
 **/ibm/logs/gi_install.log** - STDOUT of the deployment of installing IBM Cloud Pak foundational services and IBM Security Guardium Insights including the validation of the installation.
 
-**/ibm/logs/bootstrap.log** - STDOUT of the high overview of the events during deployment of Red Hat OpenShift Container Platform and IBM Security Guardium Insights.  
+**/ibm/logs/bootstrap.log** - STDOUT of the high overview of the events during deployment of Red Hat OpenShift Container Platform and IBM Security Guardium Insights. 
