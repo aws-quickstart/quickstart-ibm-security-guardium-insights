@@ -580,7 +580,7 @@ Resources:
         OCSInstanceType: !Ref 'OCSInstanceType'
         LicenseAgreement: !Ref 'LicenseAgreement'
         LicenseType: !Ref 'LicenseType'
-        GIVersion: !Ref 'GIVersion"
+        GIVersion: !Ref 'GIVersion'
         AdminUsername: !Ref 'AdminUsername'
         AdminPassword: !Ref 'AdminPassword'
         Namespace: !Ref 'Namespace'
