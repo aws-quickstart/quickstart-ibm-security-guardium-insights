@@ -182,7 +182,7 @@ Parameters:
   BootNodeAccessCIDR:
     AllowedPattern: ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/([0-9]|[1-2][0-9]|3[0-2]))$
     ConstraintDescription: CIDR block notation must follow the format "x.x.x.x/x".
-    Description:  CIDR IP range that is permitted to access the boot node instance. Set this value to a trusted IP range. The value "0.0.0.0/0" permits access to all IP addresses. Additional values can be added from the Amazon EC2 console after deployment.
+    Description: CIDR IP range that is permitted to access the boot node instance. Set this value to a trusted IP range. The value "0.0.0.0/0" permits access to all IP addresses. Additional values can be added from the Amazon EC2 console after deployment.
     Type: String
   DomainName:
     AllowedPattern: ^(\S+)$
@@ -198,6 +198,7 @@ Parameters:
       - small
       - med
       - large
+      - xlarge
     Default: small
     Description: >-
       Size of your IBM Security Guardium Insights production.
@@ -223,6 +224,7 @@ Parameters:
       - 1
       - 2
       - 3
+      - 5
     Default: 2
     Description: >-
       Desired number of IBM Db2 data node instances. Choose "1" if the Guardium Insights production size is extra small. Choose "2" if the production size is small. Choose "3" if the production size is medium or large. Note: If the number of compute node instances exceeds your Red Hat entitlement limits or AWS instance limits, the stack will fail. Choose a number that is within your limits.
@@ -300,8 +302,9 @@ Parameters:
     Type: String
   GIVersion:
     AllowedValues:
-      - '3.1.8'
-    Default: '3.1.8'
+      - '3.1.10'
+      - '3.1.11'
+    Default: '3.1.11'
     Description: Version of IBM Security Guardium Insights to be deployed.
     Type: String
   Namespace:
@@ -390,7 +393,7 @@ Parameters:
       The S3 key prefix can include numbers, lowercase letters, uppercase letters,
       hyphens (-), and forward slashes (/). End the prefix with a forward slash.
     Default: quickstart-ibm-security-guardium-insights/
-    Description:
+    Description: >-
       S3 key prefix that is used to simulate a folder for your copy of the deployment assets. Keep the default prefix unless you are customizing the template. Changing the prefix updates code references to point to a new location.
     Type: String
 Rules:
@@ -401,87 +404,106 @@ Rules:
       AssertDescription: Value cannot be 'admin'.
   LicenseAgreementRule:
     Assertions:
-    - Assert:
-        Fn::Contains:
-        - - I agree
-        - Ref: LicenseAgreement
-      AssertDescription: User must agree to the terms of the license agreement.
+      - Assert:
+          Fn::Contains:
+            - - I agree
+            - Ref: LicenseAgreement
+        AssertDescription: User must agree to the terms of the license agreement.
   XsmallProductionSizeRule:
     RuleCondition:
-      Fn::Equals : [{"Ref" : "GIProductionSize"}, "xsmall"]
+      Fn::Equals: [{ "Ref": "GIProductionSize" }, "xsmall"]
     Assertions:
       - Assert:
-          Fn::Equals : [{"Ref" : "NumberOfGINodes"}, "2"]
+          Fn::Equals: [{ "Ref": "NumberOfGINodes" }, "2"]
         AssertDescription: Number of Guardium Insights nodes must be 2 for xsmall production size.
       - Assert:
-          Fn::Equals : [{"Ref" : "NumberOfDb2DataNodes"}, "1"]
+          Fn::Equals: [{ "Ref": "NumberOfDb2DataNodes" }, "1"]
         AssertDescription: Number of Db2 data nodes must be 1 for xsmall production size.
       - Assert:
-          Fn::Equals : [{"Ref" : "GINodeInstanceType"}, "m5.8xlarge"]
+          Fn::Equals: [{ "Ref": "GINodeInstanceType" }, "m5.8xlarge"]
         AssertDescription: Guardium Insights node instance type must be 'm5.8xlarge' for xsmall production size.
       - Assert:
-          Fn::Equals : [{"Ref" : "Db2DataNodeInstanceType"}, "m5.8xlarge"]
+          Fn::Equals: [{ "Ref": "Db2DataNodeInstanceType" }, "m5.8xlarge"]
         AssertDescription: Db2 data node instance type must be 'm5.8xlarge' for xsmall production size.
       - Assert:
-          Fn::Equals : [{"Ref" : "NumberOfOCS"}, "3"]
+          Fn::Equals: [{ "Ref": "NumberOfOCS" }, "3"]
         AssertDescription: Number of OCS nodes must be 3 for xsmall production size.
   SmallProductionSizeRule:
     RuleCondition:
-      Fn::Equals : [{"Ref" : "GIProductionSize"}, "small"]
+      Fn::Equals: [{ "Ref": "GIProductionSize" }, "small"]
     Assertions:
       - Assert:
-          Fn::Equals : [{"Ref" : "NumberOfGINodes"}, "3"]
+          Fn::Equals: [{ "Ref": "NumberOfGINodes" }, "3"]
         AssertDescription: Number of Guardium Insights nodes must be 3 for small production size.
       - Assert:
-          Fn::Equals : [{"Ref" : "NumberOfDb2DataNodes"}, "2"]
+          Fn::Equals: [{ "Ref": "NumberOfDb2DataNodes" }, "2"]
         AssertDescription: Number of Db2 data nodes must be 2 for small production size.
       - Assert:
-          Fn::Equals : [{"Ref" : "GINodeInstanceType"}, "m5.4xlarge"]
+          Fn::Equals: [{ "Ref": "GINodeInstanceType" }, "m5.4xlarge"]
         AssertDescription: Guardium Insights node instance type must be 'm5.4xlarge' for small production size.
       - Assert:
-          Fn::Equals : [{"Ref" : "Db2DataNodeInstanceType"}, "m5.4xlarge"]
+          Fn::Equals: [{ "Ref": "Db2DataNodeInstanceType" }, "m5.4xlarge"]
         AssertDescription: Db2 data node instance type must be 'm5.4xlarge' for small production size.
       - Assert:
-          Fn::Equals : [{"Ref" : "NumberOfOCS"}, "3"]
+          Fn::Equals: [{ "Ref": "NumberOfOCS" }, "3"]
         AssertDescription: Number of OCS nodes must be 3 for small production size.
   MediumProductionSizeRule:
     RuleCondition:
-      Fn::Equals : [{"Ref" : "GIProductionSize"}, "med"]
+      Fn::Equals: [{ "Ref": "GIProductionSize" }, "med"]
     Assertions:
       - Assert:
-          Fn::Equals : [{"Ref" : "NumberOfGINodes"}, "4"]
+          Fn::Equals: [{ "Ref": "NumberOfGINodes" }, "4"]
         AssertDescription: Number of Guardium Insights nodes must be 4 for med production size.
       - Assert:
-          Fn::Equals : [{"Ref" : "NumberOfDb2DataNodes"}, "3"]
+          Fn::Equals: [{ "Ref": "NumberOfDb2DataNodes" }, "3"]
         AssertDescription: Number of Db2 data nodes must be 3 for med production size.
       - Assert:
-          Fn::Equals : [{"Ref" : "GINodeInstanceType"}, "m5.4xlarge"]
+          Fn::Equals: [{ "Ref": "GINodeInstanceType" }, "m5.4xlarge"]
         AssertDescription: Guardium Insights node instance type must be 'm5.4xlarge' for med production size.
       - Assert:
-          Fn::Equals : [{"Ref" : "Db2DataNodeInstanceType"}, "m5.8xlarge"]
+          Fn::Equals: [{ "Ref": "Db2DataNodeInstanceType" }, "m5.8xlarge"]
         AssertDescription: Db2 data node instance type must be 'm5.8xlarge' for med production size.
       - Assert:
-          Fn::Equals : [{"Ref" : "NumberOfOCS"}, "5"]
+          Fn::Equals: [{ "Ref": "NumberOfOCS" }, "5"]
         AssertDescription: Number of OCS nodes must be 5 for med production size.
   LargeProductionSizeRule:
     RuleCondition:
-      Fn::Equals : [{"Ref" : "GIProductionSize"}, "large"]
+      Fn::Equals: [{ "Ref": "GIProductionSize" }, "large"]
     Assertions:
       - Assert:
-          Fn::Equals : [{"Ref" : "NumberOfGINodes"}, "5"]
+          Fn::Equals: [{ "Ref": "NumberOfGINodes" }, "5"]
         AssertDescription: Number of Guardium Insights nodes must be 5 for large production size.
       - Assert:
-          Fn::Equals : [{"Ref" : "NumberOfDb2DataNodes"}, "3"]
+          Fn::Equals: [{ "Ref": "NumberOfDb2DataNodes" }, "3"]
         AssertDescription: Number of Db2 data nodes must be 3 for large production size.
       - Assert:
-          Fn::Equals : [{"Ref" : "GINodeInstanceType"}, "m5.4xlarge"]
+          Fn::Equals: [{ "Ref": "GINodeInstanceType" }, "m5.4xlarge"]
         AssertDescription: Guardium Insights node instance type must be 'm5.4xlarge' for large production size.
       - Assert:
-          Fn::Equals : [{"Ref" : "Db2DataNodeInstanceType"}, "m5.16xlarge"]
+          Fn::Equals: [{ "Ref": "Db2DataNodeInstanceType" }, "m5.16xlarge"]
         AssertDescription: Db2 data node instance type must be 'm5.16xlarge' for large production size.
       - Assert:
-          Fn::Equals : [{"Ref" : "NumberOfOCS"}, "5"]
+          Fn::Equals: [{ "Ref": "NumberOfOCS" }, "5"]
         AssertDescription: Number of OCS nodes must be 5 for large production size.
+  XLargeProductionSizeRule:
+    RuleCondition:
+      Fn::Equals: [{ "Ref": "GIProductionSize" }, "xlarge"]
+    Assertions:
+      - Assert:
+          Fn::Equals: [{ "Ref": "NumberOfGINodes" }, "5"]
+        AssertDescription: Number of Guardium Insights nodes must be 5 for xlarge production size.
+      - Assert:
+          Fn::Equals: [{ "Ref": "NumberOfDb2DataNodes" }, "5"]
+        AssertDescription: Number of Db2 data nodes must be 5 for xlarge production size.
+      - Assert:
+          Fn::Equals: [{ "Ref": "GINodeInstanceType" }, "m5.4xlarge"]
+        AssertDescription: Guardium Insights node instance type must be 'm5.4xlarge' for xlarge production size.
+      - Assert:
+          Fn::Equals: [{ "Ref": "Db2DataNodeInstanceType" }, "m5.16xlarge"]
+        AssertDescription: Db2 data node instance type must be 'm5.16xlarge' for xlarge production size.
+      - Assert:
+          Fn::Equals: [{ "Ref": "NumberOfOCS" }, "3"]
+        AssertDescription: Number of OCS nodes must be 3 for xlarge production size.
 Conditions:
   UsingDefaultBucket: !Equals [!Ref QSS3BucketName, 'aws-quickstart']
 Resources:
@@ -491,11 +513,17 @@ Resources:
       TemplateURL: !Sub
         - >-
           https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/aws-vpc.template.yaml
-        - S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
-          S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
+        - S3Bucket:
+            !If [
+              UsingDefaultBucket,
+              !Sub "${QSS3BucketName}-${AWS::Region}",
+              !Ref QSS3BucketName,
+            ]
+          S3Region:
+            !If [UsingDefaultBucket, !Ref "AWS::Region", !Ref QSS3BucketRegion]
       Parameters:
         NumberOfAZs: !Ref NumberOfAZs
-        AvailabilityZones: !Join [ ',', !Ref 'AvailabilityZones']
+        AvailabilityZones: !Join [',', !Ref 'AvailabilityZones']
         VPCCIDR: !Ref 'VPCCIDR'
         PrivateSubnet1ACIDR: !Ref 'PrivateSubnet1CIDR'
         PrivateSubnetATag2: !Sub 'kubernetes.io/cluster/${AWS::StackName}-${AWS::Region}=owned'
@@ -509,11 +537,17 @@ Resources:
       TemplateURL: !Sub
         - >-
           https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/ibm-security-guardium-insights.template.yaml
-        - S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
-          S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
+        - S3Bucket:
+            !If [
+              UsingDefaultBucket,
+              !Sub "${QSS3BucketName}-${AWS::Region}",
+              !Ref QSS3BucketName,
+            ]
+          S3Region:
+            !If [UsingDefaultBucket, !Ref "AWS::Region", !Ref QSS3BucketRegion]
       Parameters:
         NumberOfAZs: !Ref 'NumberOfAZs'
-        AvailabilityZones: !Join [ ',', !Ref 'AvailabilityZones']
+        AvailabilityZones: !Join [',', !Ref 'AvailabilityZones']
         VPCID: !GetAtt 'VPCStack.Outputs.VPCID'
         VPCCIDR: !Ref 'VPCCIDR'
         PrivateSubnet1ID: !GetAtt 'VPCStack.Outputs.PrivateSubnet1AID'
@@ -563,6 +597,3 @@ Outputs:
   GIWebClientURL:
     Description: IBM Security Guardium Insights platform URL.
     Value: !GetAtt 'GuardiumInsightsStack.Outputs.GIWebClientURL'
-  Postdeployment:
-    Description: See the deployment guide for postdeployment steps.
-    Value: https://fwd.aws/4zzGq?

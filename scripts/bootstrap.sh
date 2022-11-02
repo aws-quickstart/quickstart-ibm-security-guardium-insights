@@ -190,6 +190,7 @@ if [ ! -d "${PWD}/logs" ]; then
 fi
 
 chmod 755 gi_install.py
+chmod 755 /ibm/templates/gi/gi-custom-resource-xlarge.yaml
 chmod 755 /ibm/templates/gi/gi-custom-resource.yaml
 chmod 755 install.sh
 chmod 755 change_cs_credentials.sh

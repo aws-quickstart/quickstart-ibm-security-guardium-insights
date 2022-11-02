@@ -7,7 +7,6 @@ export OCP_SERVER_URL=$1
 export OCP_USERNAME=kubeadmin
 export OCP_PASSWORD=$2
 export LOCAL_CASE_DIR=$HOME/guardium-insights
-export CASE_ARCHIVE=ibm-guardium-insights-2.1.8.tgz
 export ICS_NAMESPACE=ibm-common-services
 export ICS_SIZE=$3
 export NAMESPACE=$4
@@ -17,6 +16,19 @@ export ADMIN_PASSWORD=$6
 export DB2_SIZE=$7
 export TAINT_DATA_NODE=$8
 export CP_REPO_PASS=$9
+export GI_VERSION=${10}
+export GI_PRODUCTION_SIZE=${11}
+
+if [ $GI_VERSION == "3.1.10" ]; then
+  export CASE_VERSION="2.1.10"
+  export CASE_ARCHIVE="ibm-guardium-insights-2.1.10.tgz"
+elif [ $GI_VERSION == "3.1.11" ]; then
+  export CASE_VERSION="2.1.11"
+  export CASE_ARCHIVE="ibm-guardium-insights-2.1.11.tgz"
+else
+  echo "IBM Security Guardium Insights Version not supported. Exiting..."
+  exit 1
+fi
 
 [[ $ADMIN_PASSWORD == "-" ]] && export ADMIN_PASSWORD=''
 
@@ -62,7 +74,7 @@ echo "------------------------------------------------------"
 echo "DOWNLOADING AND EXTRACTING GUARDIUM INSIGHTS CASE FILE"
 echo "------------------------------------------------------"
 cloudctl case save \
-  --case https://github.com/IBM/cloud-pak/raw/master/repo/case/${CASE_ARCHIVE} \
+  --case https://github.com/IBM/cloud-pak/raw/master/repo/case/ibm-guardium-insights/${CASE_VERSION}/${CASE_ARCHIVE} \
   --outputdir $LOCAL_CASE_DIR --tolerance 1
 # Checking exit status
 rc=$?
@@ -101,7 +113,7 @@ fi
 printf "\n"
 sleep 30
 maxRetry=5
-for ((retry=0;retry<=${maxRetry};retry++)); 
+for ((retry=0;retry<=${maxRetry};retry++));
 do
     status=$(oc get pods -n openshift-marketplace | grep opencloud-operators | awk '{ print $3 }')
     ready=$(oc get pods -n openshift-marketplace | grep opencloud-operators | awk '{ print $2 }')
@@ -111,7 +123,7 @@ do
         printf "\n"
         break
     else
-        if [[ $retry -eq ${maxRetry} ]]; then 
+        if [[ $retry -eq ${maxRetry} ]]; then
           printf "[ERROR] Failed to create opencloud-operators pod.\n"
           exit 1
         else
@@ -125,17 +137,17 @@ done
 # Checking opencloud operators catalog source status
 printf "\n"
 maxRetry=5
-for ((retry=0;retry<=${maxRetry};retry++)); 
+for ((retry=0;retry<=${maxRetry};retry++));
 do
     catalog_source_name=$(oc get catalogsource -n openshift-marketplace | grep opencloud-operators | awk '{ print $1 }')
     if [[ $catalog_source_name == 'opencloud-operators' ]]
-    then 
+    then
       printf "[SUCCESS] opencloud-operators catalog source created successfully.\n\n"
       oc get catalogsource -n openshift-marketplace | grep opencloud-operators
       printf "\n"
       break
     else
-        if [[ $retry -eq ${maxRetry} ]]; then 
+        if [[ $retry -eq ${maxRetry} ]]; then
           printf "[ERROR] Failed to create opencloud-operators catalog source. \n"
           exit 1
         else
@@ -144,7 +156,7 @@ do
           continue
         fi
     fi
-done 
+done
 
 # Install the Cloud Pak foundational services operators
 echo "----------------------------------------------------"
@@ -169,7 +181,7 @@ printf "\n"
 sleep 60
 maxRetry=10
 flag=true
-for ((retry=0;retry<=${maxRetry};retry++)); 
+for ((retry=0;retry<=${maxRetry};retry++));
 do
   ibm_common_services_status=$(oc get pods -n ibm-common-services | awk 'NR!=1 { print $3 }')
   pods_status=($ibm_common_services_status)
@@ -184,14 +196,14 @@ do
       break
     fi
   done
-  if $flag 
-  then 
+  if $flag
+  then
       printf "[SUCCESS] Cloud Pak foundational services pods created succussfully.\n\n"
       oc get pods -n ibm-common-services
       printf "\n"
       break
   else
-      if [[ $retry -eq ${maxRetry} ]]; then 
+      if [[ $retry -eq ${maxRetry} ]]; then
           printf "[ERROR] Failed to create Cloud Pak foundational services pod(s). \n"
           exit 1
       else
@@ -199,7 +211,7 @@ do
           sleep 180
           continue
       fi
-  fi   
+  fi
 done
 
 # Changing IBM Common Services platform-auth-idp-credentials
@@ -231,7 +243,7 @@ success_msg="[SUCCESS] Created namespace for the Guardium Insights instance."
 error_msg="[ERROR] Failed to create namespace for the Guardium Insights instance."
 check_exit_status
 
-# Retrieve host names of the data nodes for data computation 
+# Retrieve host names of the data nodes for data computation
 nodes=$(oc get nodes --show-labels | grep db2-data-node |cut -d' ' -f1)
 printf "Guardium Insights nodes that will used as dedicated DB2 data nodes:\n"
 printf "${nodes}\n\n"
@@ -285,7 +297,7 @@ fi
 printf "\n"
 sleep 30
 maxRetry=10
-for ((retry=0;retry<=${maxRetry};retry++)); 
+for ((retry=0;retry<=${maxRetry};retry++));
 do
     redis_operator_status=$(oc get pods -n openshift-marketplace | grep ibm-cloud-databases-redis-operator-catalog | awk '{ print $3 }')
     redis_operator_ready=$(oc get pods -n openshift-marketplace | grep ibm-cloud-databases-redis-operator-catalog | awk '{ print $2 }')
@@ -299,7 +311,7 @@ do
       printf "\n"
       break
     else
-        if [[ $retry -eq ${maxRetry} ]]; then 
+        if [[ $retry -eq ${maxRetry} ]]; then
           printf "[ERROR] Failed to create Guardium Insights catalogs.\n"
           exit 1
         else
@@ -332,7 +344,7 @@ fi
 printf "\n"
 sleep 30
 maxRetry=10
-for ((retry=0;retry<=${maxRetry};retry++)); 
+for ((retry=0;retry<=${maxRetry};retry++));
 do
     gi_controller_manager_status=$(oc get pods | grep guardiuminsights-controller-manager | awk '{ print $3 }')
     gi_controller_manager_ready=$(oc get pods | grep guardiuminsights-controller-manager | awk '{ print $2 }')
@@ -349,7 +361,7 @@ do
       printf "\n"
       break
     else
-        if [[ $retry -eq ${maxRetry} ]]; then 
+        if [[ $retry -eq ${maxRetry} ]]; then
           printf "[ERROR] Failed to create Guardium Insights operators.\n"
           exit 1
         else
@@ -358,7 +370,7 @@ do
           continue
         fi
     fi
-done   
+done
 
 # List available StorageClasses
 echo "---------------"
@@ -372,7 +384,11 @@ sleep 10
 echo "---------------------------------------------------------"
 echo "CREATING GUARDIUM INSIGHTS INSTANCE USING CUSTOM RESOURCE"
 echo "---------------------------------------------------------"
-oc create -f /ibm/templates/gi/gi-custom-resource.yaml
+if [[ ${GI_PRODUCTION_SIZE} == "xlarge" ]]; then
+  oc create -f /ibm/templates/gi/gi-custom-resource-xlarge.yaml
+else
+  oc create -f /ibm/templates/gi/gi-custom-resource.yaml
+fi
 # Checking exit status
 rc=$?
 success_msg="[INFO] Guardium Insights instance creation in progress..."
@@ -382,7 +398,7 @@ sleep 30
 
 # Check the status of the instance creation
 maxRetry=30
-for ((retry=0;retry<=${maxRetry};retry++)); 
+for ((retry=0;retry<=${maxRetry};retry++));
 do
     oc get guardiuminsights
     type=$(oc get guardiuminsights -o=jsonpath='{.items[*].status.conditions[0].type}')
@@ -394,25 +410,25 @@ do
       printf "\n"
       break
     else
-        if [[ $retry -eq ${maxRetry} ]]; then 
+        if [[ $retry -eq ${maxRetry} ]]; then
           printf "\n[ERROR] Timed Out! Failed to create Guardium Insights instance using custom resource(CR).\n\n"
           oc get pods
           exit 1
         elif [[ $type == 'Failure' ]]; then
           printf "\n[ERROR] Failed to create Guardium Insights instance using custom resource(CR).\n\n"
           oc get pods
-          exit 1        
+          exit 1
         else
           sleep 180
           continue
         fi
     fi
-done  
+done
 
 # Check PVC status
 maxRetry=5
 flag=true
-for ((retry=0;retry<=${maxRetry};retry++)); 
+for ((retry=0;retry<=${maxRetry};retry++));
 do
   pvcs=$(oc get pvc -o jsonpath='{.items[*].status.phase}')
   pvc_status=($pvcs)
@@ -427,13 +443,13 @@ do
       break
     fi
   done
-  if $flag 
-  then 
+  if $flag
+  then
       printf "[SUCCESS] PVCs has Bound status.\n"
       oc get pvc
       break
   else
-      if [[ $retry -eq ${maxRetry} ]]; then 
+      if [[ $retry -eq ${maxRetry} ]]; then
           printf "[ERROR] PVC(s) failed to have Bound status. \n"
           exit 1
       else
@@ -441,7 +457,7 @@ do
           sleep 180
           continue
       fi
-  fi   
+  fi
 done
 
 # Cleanup secrets from the EC2 instance

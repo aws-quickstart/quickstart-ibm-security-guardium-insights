@@ -207,6 +207,7 @@ Parameters:
       - small
       - med
       - large
+      - xlarge
     Default: small
     Description: >-
       Size of your IBM Security Guardium Insights production.
@@ -232,6 +233,7 @@ Parameters:
       - 1
       - 2
       - 3
+      - 5
     Default: 2
     Description: >-
       Desired number of IBM Db2 data node instances. Choose "1" if the Guardium Insights production size is extra small. Choose "2" if the production size is small. Choose "3" if the production size is medium or large. Note: If the number of compute node instances exceeds your Red Hat entitlement limits or AWS instance limits, the stack will fail. Choose a number that is within your limits.
@@ -309,8 +311,9 @@ Parameters:
     Type: String
   GIVersion:
     AllowedValues:
-      - '3.1.8'
-    Default: '3.1.8'
+      - '3.1.10'
+      - '3.1.11'
+    Default: '3.1.11'
     Description: Version of IBM Security Guardium Insights to be deployed.
     Type: String
   Namespace:
@@ -499,6 +502,25 @@ Rules:
       - Assert:
           Fn::Equals : [{"Ref" : "NumberOfOCS"}, "5"]
         AssertDescription: Number of OCS nodes must be 5 for large production size.
+  XLargeProductionSizeRule:
+    RuleCondition:
+      Fn::Equals: [{ "Ref": "GIProductionSize" }, "xlarge"]
+    Assertions:
+      - Assert:
+          Fn::Equals: [{ "Ref": "NumberOfGINodes" }, "5"]
+        AssertDescription: Number of Guardium Insights nodes must be 5 for xlarge production size.
+      - Assert:
+          Fn::Equals: [{ "Ref": "NumberOfDb2DataNodes" }, "5"]
+        AssertDescription: Number of Db2 data nodes must be 5 for xlarge production size.
+      - Assert:
+          Fn::Equals: [{ "Ref": "GINodeInstanceType" }, "m5.4xlarge"]
+        AssertDescription: Guardium Insights node instance type must be 'm5.4xlarge' for xlarge production size.
+      - Assert:
+          Fn::Equals: [{ "Ref": "Db2DataNodeInstanceType" }, "m5.16xlarge"]
+        AssertDescription: Db2 data node instance type must be 'm5.16xlarge' for xlarge production size.
+      - Assert:
+          Fn::Equals: [{ "Ref": "NumberOfOCS" }, "3"]
+        AssertDescription: Number of OCS nodes must be 3 for xlarge production size.
 Mappings:
   AWSAMIRegionMap:
     ap-northeast-1:
@@ -745,12 +767,10 @@ Resources:
                 AWS_REGION=${AWS::Region}
                 AWS_STACKID="${AWS::StackId}"
                 AWS_STACKNAME="${AWS::StackName}"
-
             /root/.aws/config:
               content: !Sub |
                 [default]
                 region=${AWS::Region}
-
             /root/.aws/credentials:
               content:
                 !Sub
@@ -791,7 +811,6 @@ Resources:
             yum install -y unzip
             yum install -y python3
             yum install -y jq
-
             git clone https://github.com/aws-quickstart/quickstart-linux-utilities.git
             #file to set up system-wide environment variables
             touch /etc/profile.d/gi_install.sh
@@ -799,22 +818,17 @@ Resources:
             #load the environment variables into the current shell session
             source /etc/profile.d/gi_install.sh
             source $P
-
             qs_bootstrap_pip || qs_err " pip bootstrap failed "
             qs_aws-cfn-bootstrap || qs_err " cfn bootstrap failed "
             pip install awscli  &> /var/log/userdata.awscli_install.log || qs_err " awscli install failed "
-
             /usr/bin/cfn-init -v --stack ${AWS::StackName} --resource BootnodeInstance --configsets Required --region ${AWS::Region}
             # Signal the status from cfn-init
             /usr/bin/cfn-signal -e $? --stack ${AWS::StackName} --resource BootnodeInstance --region ${AWS::Region}
-
             echo -e "export GI_QS_S3URI=s3://${QSS3BucketName}/${QSS3KeyPrefix}\nexport INGRESS_KEYFILE_S3URI=${IngressKeyFile}\nexport INGRESS_CERTFILE_S3URI=${IngressCertFile}\nexport INGRESS_CAFILE_S3URI=${IngressCAFile}\nexport AWS_REGION=${AWS::Region}\nexport AWS_STACKID=${AWS::StackId}\nexport AWS_STACKNAME=${AWS::StackName}\nexport AMI_ID='${AMI_ID}'\nexport GI_SECRET='${GISecret}'\nexport OCP_SECRET='${OpenShiftSecret}'\nexport GI_ADMIN_SECRET='${GIAdminSecret}'\nexport GIInstallationCompletedURL='${GIInstallationCompletedHandle}'" >> /etc/profile.d/gi_install.sh
             source /etc/profile.d/gi_install.sh
-
             mkdir -p /quickstart
             mkdir -p /ibm
             chmod -R 755 /ibm
-
             aws s3 cp ${!GI_QS_S3URI}scripts/bootstrap.sh /quickstart/
             chmod +x /quickstart/bootstrap.sh
             ./quickstart/bootstrap.sh
