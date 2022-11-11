@@ -19,12 +19,12 @@ export CP_REPO_PASS=$9
 export GI_VERSION=${10}
 export GI_PRODUCTION_SIZE=${11}
 
-if [ $GI_VERSION == "3.1.10" ]; then
-  export CASE_VERSION="2.1.10"
-  export CASE_ARCHIVE="ibm-guardium-insights-2.1.10.tgz"
-elif [ $GI_VERSION == "3.1.11" ]; then
-  export CASE_VERSION="2.1.11"
-  export CASE_ARCHIVE="ibm-guardium-insights-2.1.11.tgz"
+if [ $GI_VERSION == "3.2.0" ]; then
+  export CASE_VERSION="2.2.0"
+  export CASE_ARCHIVE="ibm-guardium-insights-2.2.0.tgz"
+elif [ $GI_VERSION == "3.2.1" ]; then
+  export CASE_VERSION="2.2.1"
+  export CASE_ARCHIVE="ibm-guardium-insights-2.1.1.tgz"
 else
   echo "IBM Security Guardium Insights Version not supported. Exiting..."
   exit 1
@@ -101,7 +101,7 @@ cloudctl case launch \
   --inventory ibmCommonServiceOperatorSetup \
   --action install-catalog \
   --tolerance 1 \
-  --args "--registry icr.io"
+  --args "--registry icr.io --inputDir ${LOCAL_CASE_DIR}"
 # Checking exit status
 rc=$?
 if [ "$rc" != "0" ]; then
@@ -168,7 +168,7 @@ cloudctl case launch \
   --inventory ibmCommonServiceOperatorSetup \
   --tolerance 1 \
   --action install-operator \
-  --args "--size ${ICS_SIZE}"
+  --args "--size ${ICS_SIZE} --inputDir ${LOCAL_CASE_DIR}"
 # Checking exit status
 rc=$?
 if [ "$rc" != "0" ]; then
