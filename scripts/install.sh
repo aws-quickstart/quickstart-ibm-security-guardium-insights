@@ -24,7 +24,7 @@ if [ $GI_VERSION == "3.2.0" ]; then
   export CASE_ARCHIVE="ibm-guardium-insights-2.2.0.tgz"
 elif [ $GI_VERSION == "3.2.1" ]; then
   export CASE_VERSION="2.2.1"
-  export CASE_ARCHIVE="ibm-guardium-insights-2.1.1.tgz"
+  export CASE_ARCHIVE="ibm-guardium-insights-2.2.1.tgz"
 else
   echo "IBM Security Guardium Insights Version not supported. Exiting..."
   exit 1
