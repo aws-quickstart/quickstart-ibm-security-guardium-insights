@@ -302,12 +302,12 @@ Parameters:
     Type: String
   LicenseType:
     AllowedValues:
-      - 'L-TESX-CF9NUW - IBM  Security Guardium Insights v3.2'
-      - 'L-TESX-CF9NVW - IBM Security Guardium Insights for Guardium Data Protection for z/OS v3.2'
-      - 'L-TESX-CF9NWS - IBM Security Guardium Insights for IBM Cloud Pak for Security v3.2'
-      - 'L-GBLK-CDVHGZ - IBM Security Guardium Package (Software) v1.10'
-      - 'L-GBLK-CEYGU9 - IBM Cloud Pak for Security (Gen 3) v1.10 (Replaces IBM Security Guardium Insights for IBM Cloud Pak for Security 3.1)'
-    Default: 'L-GBLK-CDVHGZ - IBM Security Guardium Package (Software) v1.10'
+      - 'L-TESX-CF9NUW (IBM  Security Guardium Insights v3.2)'
+      - 'L-TESX-CF9NVW (IBM Security Guardium Insights for Guardium Data Protection for z/OS v3.2)'
+      - 'L-TESX-CF9NWS (IBM Security Guardium Insights for IBM Cloud Pak for Security v3.2)'
+      - 'L-GBLK-CDVHGZ (IBM Security Guardium Package (Software) v1.10)'
+      - 'L-GBLK-CEYGU9 (IBM Cloud Pak for Security (Gen 3) v1.10 (Replaces IBM Security Guardium Insights for IBM Cloud Pak for Security 3.1))'
+    Default: 'L-GBLK-CDVHGZ (IBM Security Guardium Package (Software) v1.10)'
     Description: IBM Security Guardium Insights license types.
     Type: String
   GIVersion:
