@@ -16,8 +16,8 @@ export ADMIN_PASSWORD=$6
 export DB2_SIZE=$7
 export TAINT_DATA_NODE=$8
 export CP_REPO_PASS=$9
-export GI_VERSION=$10
-export GI_PRODUCTION_SIZE=$11
+export GI_VERSION=${10}
+export GI_PRODUCTION_SIZE=${11}
 
 if [ $GI_VERSION == "3.2.0" ]; then
   export CASE_VERSION="2.2.0"
