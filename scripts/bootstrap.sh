@@ -39,34 +39,6 @@ if [ ! -d "/usr/local/bin/" ]; then
   fi
 fi
 
-# Installing Red Hat Openshift 4.8 CLI
-# qs_retry_command 10 wget https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/stable-4.8/openshift-client-linux.tar.gz
-# rc=$?
-# if [ "$rc" != "0" ]; then
-#   failure_msg="[ERROR] Couldn't download Red Hat OpenShift CLI file."
-#   cfn_init_status
-# fi
-# tar -xvf openshift-client-linux.tar.gz
-# chmod -R 755 oc
-# chmod -R 755 kubectl
-# mv oc /usr/local/bin/oc
-# mv kubectl /usr/local/bin/kubectl
-# rm -f openshift-client-linux.tar.gz
-
-# Installing Red Hat Openshift 4.8 installer
-# wget https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/stable-4.8/openshift-install-linux.tar.gz
-# rc=$?
-# if [ "$rc" != "0" ]; then
-#   failure_msg="[ERROR] Couldn't download Red Hat OpenShift installer file."
-#   cfn_init_status
-# fi
-# tar -xvf openshift-install-linux.tar.gz
-# chmod 755 openshift-install
-# mv openshift-install /ibm
-# rm -f openshift-install-linux.tar.gz
-
-# cd ..
-
 # Installing Red Hat Openshift 4.10 CLI
 qs_retry_command 10 wget https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/stable-4.10/openshift-client-linux.tar.gz
 rc=$?
@@ -140,6 +112,27 @@ make install
 echo -e "export LD_LIBRARY_PATH=/usr/local/lib:/usr/local/lib64" >> /etc/profile.d/openssl.sh
 source /etc/profile.d/openssl.sh
 openssl version
+
+# Installing python3
+# yum install gcc openssl-devel bzip2-devel libffi-devel -y
+# curl -O https://www.python.org/ftp/python/3.9.15/Python-3.9.15.tgz
+# if [ "$rc" != "0" ]; then
+#   failure_msg="[ERROR] Couldn't download python3."
+#   cfn_init_status
+# fi
+# tar -xzf Python-3.9.15.tgz
+# rm -rf Python-3.9.15.tgz
+# cd Python-3.9.15/
+# ./configure --enable-optimizations
+# cd ..
+# mv Python-3.9.15/ /usr/local/bin/python3
+yum install -y python3
+
+# Install pyyaml
+pip3 install pyyaml
+
+# Install Argparse
+pip3 install argparse
 
 # Installing jq
 yum install wget
