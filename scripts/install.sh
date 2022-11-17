@@ -285,6 +285,7 @@ cloudctl case launch \
   --namespace openshift-marketplace \
   --inventory install \
   --action install-catalog \
+  --args "--inputDir ${LOCAL_CASE_DIR}" \
   --tolerance 1
 # Checking exit status
 rc=$?
