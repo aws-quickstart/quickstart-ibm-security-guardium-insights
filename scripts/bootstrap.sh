@@ -114,19 +114,21 @@ source /etc/profile.d/openssl.sh
 openssl version
 
 # Installing python3
-# yum install gcc openssl-devel bzip2-devel libffi-devel -y
-# curl -O https://www.python.org/ftp/python/3.9.15/Python-3.9.15.tgz
-# if [ "$rc" != "0" ]; then
-#   failure_msg="[ERROR] Couldn't download python3."
-#   cfn_init_status
-# fi
-# tar -xzf Python-3.9.15.tgz
-# rm -rf Python-3.9.15.tgz
-# cd Python-3.9.15/
-# ./configure --enable-optimizations
-# cd ..
-# mv Python-3.9.15/ /usr/local/bin/python3
-yum install -y python3
+yum install gcc openssl-devel bzip2-devel libffi-devel -y
+curl -O https://www.python.org/ftp/python/3.10.8/Python-3.10.8.tgz
+if [ "$rc" != "0" ]; then
+  failure_msg="[ERROR] Couldn't download python3."
+  cfn_init_status
+fi
+tar -xzf Python-3.10.8.tgz
+rm -rf Python-3.10.8.tgz
+cd Python-3.10.8/
+./configure --prefix=/opt/python3 --enable-optimizations
+make
+make altinstall
+ln -s /opt/python3/bin/python3 /usr/bin/python3
+python3 --version
+# yum install -y python3
 
 # Install pyyaml
 pip3 install pyyaml
