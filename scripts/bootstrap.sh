@@ -113,29 +113,6 @@ echo -e "export LD_LIBRARY_PATH=/usr/local/lib:/usr/local/lib64" >> /etc/profile
 source /etc/profile.d/openssl.sh
 openssl version
 
-# Installing python3
-yum install gcc openssl-devel bzip2-devel libffi-devel -y
-curl -O https://www.python.org/ftp/python/3.10.8/Python-3.10.8.tgz
-if [ "$rc" != "0" ]; then
-  failure_msg="[ERROR] Couldn't download python3."
-  cfn_init_status
-fi
-tar -xzf Python-3.10.8.tgz
-rm -rf Python-3.10.8.tgz
-cd Python-3.10.8/
-./configure --prefix=/opt/python3 --enable-optimizations
-make
-make altinstall
-ln -s /opt/python3/bin/python3 /usr/bin/python3
-python3 --version
-# yum install -y python3
-
-# Install pyyaml
-pip3 install pyyaml
-
-# Install Argparse
-pip3 install argparse
-
 # Installing jq
 yum install wget
 wget https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64 -O /usr/local/bin/jq
@@ -229,4 +206,16 @@ echo $HOME
 export KUBECONFIG=/root/.kube/config
 echo $KUBECONFIG
 echo $PATH
-python /ibm/gi_install.py --region "${AWS_REGION}" --stack-id "${AWS_STACKID}" --stack-name ${AWS_STACKNAME} --logfile $LOGFILE --loglevel "*=all"
+
+# Switching to python3
+update-alternatives --install /usr/bin/python python /usr/bin/python3 1
+sleep 15
+python --version &> /var/log/userdata.python3_install.log
+
+# Install pyyaml
+pip3 install pyyaml
+
+# Install Argparse
+pip3 install argparse
+
+python2 /ibm/gi_install.py --region "${AWS_REGION}" --stack-id "${AWS_STACKID}" --stack-name ${AWS_STACKNAME} --logfile $LOGFILE --loglevel "*=all"

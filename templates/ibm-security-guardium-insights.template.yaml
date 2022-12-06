@@ -821,7 +821,7 @@ Resources:
             source $P
             qs_bootstrap_pip || qs_err " pip bootstrap failed "
             qs_aws-cfn-bootstrap || qs_err " cfn bootstrap failed "
-            pip install awscli  &> /var/log/userdata.awscli_install.log || qs_err " awscli install failed "
+            pip3 install awscli  &> /var/log/userdata.awscli_install.log || qs_err " awscli install failed "
             /usr/bin/cfn-init -v --stack ${AWS::StackName} --resource BootnodeInstance --configsets Required --region ${AWS::Region}
             # Signal the status from cfn-init
             /usr/bin/cfn-signal -e $? --stack ${AWS::StackName} --resource BootnodeInstance --region ${AWS::Region}
