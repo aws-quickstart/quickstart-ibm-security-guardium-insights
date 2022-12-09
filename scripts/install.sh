@@ -19,7 +19,7 @@ export CP_REPO_PASS=$9
 export GI_VERSION=${10}
 export GI_PRODUCTION_SIZE=${11}
 
-if [ "$GI_VERSION" == "3.2.1" ]]; then
+if [ "$GI_VERSION" == "3.2.1" ]; then
   export CASE_VERSION="2.2.1"
   export CASE_ARCHIVE="ibm-guardium-insights-2.2.1.tgz"
 elif [ "$GI_VERSION" == "3.2.2" ]; then
