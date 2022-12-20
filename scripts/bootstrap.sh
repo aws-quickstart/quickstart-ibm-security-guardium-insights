@@ -39,8 +39,8 @@ if [ ! -d "/usr/local/bin/" ]; then
   fi
 fi
 
-# Installing Red Hat Openshift 4.8 CLI
-qs_retry_command 10 wget https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/stable-4.8/openshift-client-linux.tar.gz
+# Installing Red Hat Openshift 4.10 CLI
+qs_retry_command 10 wget https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/stable-4.10/openshift-client-linux.tar.gz
 rc=$?
 if [ "$rc" != "0" ]; then
   failure_msg="[ERROR] Couldn't download Red Hat OpenShift CLI file."
@@ -53,8 +53,8 @@ mv oc /usr/local/bin/oc
 mv kubectl /usr/local/bin/kubectl
 rm -f openshift-client-linux.tar.gz
 
-# Installing Red Hat Openshift 4.8 installer
-wget https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/stable-4.8/openshift-install-linux.tar.gz
+# Installing Red Hat Openshift 4.10 installer
+wget https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/stable-4.10/openshift-install-linux.tar.gz
 rc=$?
 if [ "$rc" != "0" ]; then
   failure_msg="[ERROR] Couldn't download Red Hat OpenShift installer file."
@@ -206,4 +206,16 @@ echo $HOME
 export KUBECONFIG=/root/.kube/config
 echo $KUBECONFIG
 echo $PATH
-python /ibm/gi_install.py --region "${AWS_REGION}" --stack-id "${AWS_STACKID}" --stack-name ${AWS_STACKNAME} --logfile $LOGFILE --loglevel "*=all"
+
+# Switching to python3
+update-alternatives --install /usr/bin/python python /usr/bin/python3 1
+sleep 15
+python --version &> /var/log/userdata.python3_install.log
+
+# Install pyyaml
+pip3 install pyyaml
+
+# Install Argparse
+pip3 install argparse
+
+python2 /ibm/gi_install.py --region "${AWS_REGION}" --stack-id "${AWS_STACKID}" --stack-name ${AWS_STACKNAME} --logfile $LOGFILE --loglevel "*=all"

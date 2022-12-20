@@ -302,18 +302,17 @@ Parameters:
     Type: String
   LicenseType:
     AllowedValues:
-      - 'L-TESX-C86NC4 (IBM Security Guardium Insights for IBM Cloud Pak for Security (Gen 3))'
-      - 'L-TESX-C86NKZ (IBM Security Guardium Insights)'
-      - 'L-TESX-C86NM4 (IBM Security Guardium Insights for Guardium Data Protection for z/OS)'
-      - 'L-TESX-C86NPQ (IBM Security Guardium Insights for IBM Cloud Pak for Security)'
-    Default: 'L-TESX-C86NC4 (IBM Security Guardium Insights for IBM Cloud Pak for Security (Gen 3))'
-    Description: IBM Security Guardium Insights license types.
+      - 'IBM Security Guardium Package (Software) (L-GBLK-CDVHGZ)'
+      - 'IBM Security Guardium Insights for IBM Cloud Pak for Security (Gen 3) (L-TESX-C86NC4)'
+      - 'IBM Security Guardium Insights for IBM Cloud Pak for Security (L-TESX-C86NPQ)'
+    Default: 'IBM Security Guardium Package (Software) (L-GBLK-CDVHGZ)'
+    Description: IBM Security Guardium Insights license types, confirm entitled part name in IBM-provided Proof of Entitlement.
     Type: String
   GIVersion:
     AllowedValues:
-      - '3.1.10'
-      - '3.1.11'
-    Default: '3.1.11'
+      - '3.2.1'
+      - '3.2.2'
+    Default: '3.2.2'
     Description: Version of IBM Security Guardium Insights to be deployed.
     Type: String
   Namespace:
@@ -820,7 +819,7 @@ Resources:
             source $P
             qs_bootstrap_pip || qs_err " pip bootstrap failed "
             qs_aws-cfn-bootstrap || qs_err " cfn bootstrap failed "
-            pip install awscli  &> /var/log/userdata.awscli_install.log || qs_err " awscli install failed "
+            pip3 install awscli  &> /var/log/userdata.awscli_install.log || qs_err " awscli install failed "
             /usr/bin/cfn-init -v --stack ${AWS::StackName} --resource BootnodeInstance --configsets Required --region ${AWS::Region}
             # Signal the status from cfn-init
             /usr/bin/cfn-signal -e $? --stack ${AWS::StackName} --resource BootnodeInstance --region ${AWS::Region}

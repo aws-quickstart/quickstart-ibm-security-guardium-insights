@@ -727,7 +727,8 @@ class GuardiumInsightsInstall(object):
         try:
             data = "%s: IBM Security Guardium Insights installation elapsed time: %d:%02d:%02d" % (status, eth, etm, ets)
             check_call([
-                'cfn-signal',
+                'python2',
+                '/bin/cfn-signal',
                 '--success', success,
                 '--id', self.stack_id,
                 '--reason', status,
