@@ -18,13 +18,14 @@ export TAINT_DATA_NODE=$8
 export CP_REPO_PASS=$9
 export GI_VERSION=${10}
 export GI_PRODUCTION_SIZE=${11}
+export DB2CASENAME=ibm-db2uoperator-4.0.11.tgz
 
-if [ "$GI_VERSION" == "3.2.1" ]; then
-  export CASE_VERSION="2.2.1"
-  export CASE_ARCHIVE="ibm-guardium-insights-2.2.1.tgz"
-elif [ "$GI_VERSION" == "3.2.2" ]; then
-  export CASE_VERSION="2.2.2"
-  export CASE_ARCHIVE="ibm-guardium-insights-2.2.2.tgz"
+if [ "$GI_VERSION" == "3.2.3" ]; then
+  export CASE_VERSION="2.2.3"
+  export CASE_ARCHIVE="ibm-guardium-insights-2.2.3.tgz"
+elif [ "$GI_VERSION" == "3.2.4" ]; then
+  export CASE_VERSION="2.2.4"
+  export CASE_ARCHIVE="ibm-guardium-insights-2.2.4.tgz"
 else
   echo "IBM Security Guardium Insights Version not supported. Exiting..."
   exit 1
@@ -244,7 +245,9 @@ error_msg="[ERROR] Failed to create namespace for the Guardium Insights instance
 check_exit_status
 
 # Retrieve host names of the data nodes for data computation
-nodes=$(oc get nodes --show-labels | grep db2-data-node |cut -d' ' -f1)
+# nodes=$(oc get nodes --show-labels | grep db2-data-node |cut -d' ' -f1) ##REMOVE THIS LINE
+oc label node $(oc get nodes | grep --color=never worker | cut -f 1 -d ' ' | awk '{print $1}') icp4data=database-db2wh
+nodes=$(oc get nodes --show-labels -licp4data | grep worker | cut -f 1 -d ' ' | awk '{print $1}')
 printf "Guardium Insights nodes that will used as dedicated DB2 data nodes:\n"
 printf "${nodes}\n\n"
 db2_data_nodes=($nodes); db2_data_nodes_list=""; no_of_nodes=$DB2_SIZE; node=0
