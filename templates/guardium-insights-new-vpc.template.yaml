@@ -535,7 +535,7 @@ Resources:
     Properties:
       TemplateURL: !Sub
         - >-
-          https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/guardium-insights-existing-vpc.yaml
+          https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/guardium-insights-existing-vpc.template.yaml
         - S3Bucket:
             !If [
               UsingDefaultBucket,
