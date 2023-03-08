@@ -18,7 +18,6 @@ export TAINT_DATA_NODE=$8
 export CP_REPO_PASS=$9
 export GI_VERSION=${10}
 export GI_PRODUCTION_SIZE=${11}
-export DB2CASENAME=ibm-db2uoperator-4.0.11.tgz
 
 if [ "$GI_VERSION" == "3.2.3" ]; then
   export CASE_VERSION="2.2.3"
@@ -272,7 +271,7 @@ cloudctl case launch    \
   --inventory install     \
   --action pre-install    \
   --tolerance 1 \
-  --args "-n ${NAMESPACE} -h ${db2_data_nodes_list} -l true -t ${TAINT_DATA_NODE} -k ${INGRESS_KEYFILE} -f ${INGRESS_CERTFILE} -c ${INGRESS_CAFILE}"
+  --args "-n ${NAMESPACE} -h ${db2_data_nodes_list} -l true -t false -k ${INGRESS_KEYFILE} -f ${INGRESS_CERTFILE} -c ${INGRESS_CAFILE}"
 # Checking exit status
 rc=$?
 success_msg="[SUCCESS] Installed the Guardium Insights operator and related components."
