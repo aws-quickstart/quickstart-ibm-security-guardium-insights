@@ -244,9 +244,7 @@ error_msg="[ERROR] Failed to create namespace for the Guardium Insights instance
 check_exit_status
 
 # Retrieve host names of the data nodes for data computation
-# nodes=$(oc get nodes --show-labels | grep db2-data-node |cut -d' ' -f1) ##REMOVE THIS LINE
-oc label node $(oc get nodes | grep --color=never worker | cut -f 1 -d ' ' | awk '{print $1}') icp4data=database-db2wh
-nodes=$(oc get nodes --show-labels -licp4data | grep worker | cut -f 1 -d ' ' | awk '{print $1}')
+nodes=$(oc get nodes --show-labels | grep db2-data-node |cut -d' ' -f1) 
 printf "Guardium Insights nodes that will used as dedicated DB2 data nodes:\n"
 printf "${nodes}\n\n"
 db2_data_nodes=($nodes); db2_data_nodes_list=""; no_of_nodes=$DB2_SIZE; node=0
