@@ -524,55 +524,55 @@ Mappings:
   AWSAMIRegionMap:
     ap-northeast-1:
       RHEL79HVM: ami-0073b6113281aa32e
-      COREOS: ami-0cbfa8ffc109e662b
+      COREOS: ami-021e9f89e696e1d97
     ap-northeast-2:
       RHEL79HVM: ami-04adf7ab262061270
-      COREOS: ami-0139b071c66145a43
+      COREOS: ami-02cc61557cf74d503
     ap-northeast-3:
       RHEL79HVM: ami-0ea15419fc3544d6a
-      COREOS: ami-05bbec7e784d178de
+      COREOS: ami-058e08a0b401c73a4
     ap-south-1:
       RHEL79HVM: ami-01dd6bbea8d062bf3
-      COREOS: ami-0dfcada6b5fb916a9
+      COREOS: ami-015a1f7b7ee92e58a
     ap-southeast-1:
       RHEL79HVM: ami-0ee6bfca4452064bc
-      COREOS: ami-09b44413aa0fd5126
+      COREOS: ami-0124892edfd2f7e40
     ap-southeast-2:
       RHEL79HVM: ami-0bf7d72cc0b127581
-      COREOS: ami-0e7a4585230942e95
+      COREOS: ami-03710422fdfe57137
     ca-central-1:
       RHEL79HVM: ami-0f1c453d5ca1059f0
-      COREOS: ami-063575f735f608436
+      COREOS: ami-091fb0c6997a904b6
     eu-central-1:
       RHEL79HVM: ami-0a62e33b5dcf31c85
-      COREOS: ami-0dde5861d8ae904bb
+      COREOS: ami-0ee576f17174d481b
     eu-north-1:
       RHEL79HVM: ami-0a32f8cdd314cf493
-      COREOS: ami-06aae83fef6d9392e
+      COREOS: ami-06746cb8416c35a5d
     eu-west-1:
       RHEL79HVM: ami-06211bde2f9c725e5
-      COREOS: ami-09b2357f04f4bfe44
+      COREOS: ami-079eb028a24ce6d4a
     eu-west-2:
       RHEL79HVM: ami-0a8aebd46fb700315
-      COREOS: ami-0e75819e503f14c30
+      COREOS: ami-0ef085042484cec5f
     eu-west-3:
       RHEL79HVM: ami-07185297899bb7755
-      COREOS: ami-091c1eedd26198135
+      COREOS: ami-04586e3357c6ea2c6
     sa-east-1:
       RHEL79HVM: ami-08acb85e5164523d7
-      COREOS: ami-01332c66b87f30aff
+      COREOS: ami-037d98ac73652fac8
     us-east-1:
       RHEL79HVM: ami-09b40379115c82c17
       COREOS: ami-0e6075c4736ca2c44
     us-east-2:
       RHEL79HVM: ami-0bb2449c2217cb9b0
-      COREOS: ami-097ae8c7e8941299b
+      COREOS: ami-0b31da9d291c8b166
     us-west-1:
       RHEL79HVM: ami-085733fd69e77a079
-      COREOS: ami-060114ab0f683ace0
+      COREOS: ami-044a2582d07898b95
     us-west-2:
       RHEL79HVM: ami-027da4fca766221c9
-      COREOS: ami-0986d308745e1399a
+      COREOS: ami-0c47fbbc8defcf370
 Conditions:
   UsingDefaultBucket: !Equals [!Ref QSS3BucketName, 'aws-quickstart']
 Resources:
