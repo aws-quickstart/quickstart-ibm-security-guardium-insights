@@ -269,7 +269,7 @@ cloudctl case launch    \
   --inventory install     \
   --action pre-install    \
   --tolerance 1 \
-  --args "-n ${NAMESPACE} -h ${db2_data_nodes_list} -l true -t false -k ${INGRESS_KEYFILE} -f ${INGRESS_CERTFILE} -c ${INGRESS_CAFILE}"
+  --args "-n ${NAMESPACE} -h ${db2_data_nodes_list} -l true -t ${TAINT_DATA_NODE} -k ${INGRESS_KEYFILE} -f ${INGRESS_CERTFILE} -c ${INGRESS_CAFILE}"
 # Checking exit status
 rc=$?
 success_msg="[SUCCESS] Installed the Guardium Insights operator and related components."
