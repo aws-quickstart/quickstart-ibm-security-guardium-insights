@@ -22,12 +22,13 @@ spec:
         machine.openshift.io/cluster-api-machine-role: workerdb2
         machine.openshift.io/cluster-api-machine-type: workerdb2
         machine.openshift.io/cluster-api-machineset: CLUSTERID-workerdb2-${az1}
+        role: db2-data-node
     spec:
       metadata:
         creationTimestamp: null
         labels:
           role: db2-data-node
-          node-role.kubernetes.io/worker: ""
+          node-role.kubernetes.io/worker: "db2-data-node"
       providerSpec:
         value:
           ami:
