@@ -24,8 +24,8 @@ To create your own fully qualified domain name (FQDN) for the {partner-product-n
 . For *Routing policy*, choose `Simple routing`.
 . Choose *Create record*.
 
-Upload the TLS certificate, TLS key, and custom TLS certificate to the S3 bucket you created for your OpenShift pull secret. During deployment, enter the TLS certificate, TLS keys, and custom TLS certificate as parameters. For more information, refer to https://www.ibm.com/docs/en/guardium-insights/3.1.x?topic=planning-domain-name-tls-certificates[Domain Name and TLS Certificates^].
+Upload the TLS certificate, TLS key, and custom TLS certificate to the S3 bucket you created for your OpenShift pull secret. During deployment, enter the TLS certificate, TLS keys, and custom TLS certificate as parameters. For more information, refer to https://www.ibm.com/docs/SSWSZ5_3.2.x/planning/planning_domain_tls.html[Domain Name and TLS Certificates^].
 
 === Deployment sizes
 
-The Quick Start supports extra-small, small, medium, and large deployments of {partner-product-name} on the AWS Cloud. During deployment, specify a production size using the `IBM Security Guardium Insights production size` (`GIProductionSize`) parameter. For more information about the hardware requirements for different production sizes, refer to https://www.ibm.com/docs/en/guardium-insights/3.1.x?topic=planning-hardware-cluster-requirements[Hardware cluster requirements^].
+The Quick Start supports extra-small, small, medium, and large deployments of {partner-product-name} on the AWS Cloud. During deployment, specify a production size using the `IBM Security Guardium Insights production size` (`GIProductionSize`) parameter. For more information about the hardware requirements for different production sizes, refer to https://www.ibm.com/docs/SSWSZ5_3.2.x/planning/sys_req_hardware_cluster.html[Hardware cluster requirements^].
