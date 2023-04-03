@@ -5,7 +5,7 @@ The deployment generates the following standard output (stdout) log files in the
 * `gi_install.log` – Standard output of IBM Cloud Pak foundational services and IBM Security Guardium Insights installation, including installation validation.
 * `bootstrap.log` – Standard output of a high-level overview of events during deployment of Red Hat OpenShift Container Platform and IBM Security Guardium Insights.
 
-For troubleshooting {partner-product-name}, refer to https://www.ibm.com/docs/en/guardium-insights/3.1.x?topic=problems-techniques-troubleshooting[Techniques for troubleshooting problems^].
+For troubleshooting {partner-product-name}, refer to https://www.ibm.com/docs/SSWSZ5_3.2.x/tshoot/h2_overview.html[Techniques for troubleshooting problems^].
 
 For troubleshooting common Quick Start issues, refer to the https://fwd.aws/rA69w?[AWS Quick Starts General Information Guide^] and https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/troubleshooting.html[Troubleshooting CloudFormation^].
 
