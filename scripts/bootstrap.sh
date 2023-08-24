@@ -39,8 +39,8 @@ if [ ! -d "/usr/local/bin/" ]; then
   fi
 fi
 
-# Installing Red Hat Openshift 4.10 CLI
-qs_retry_command 10 wget https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/stable-4.10/openshift-client-linux.tar.gz
+# Installing Red Hat Openshift 4.12 CLI
+qs_retry_command 10 wget https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/stable-4.12/openshift-client-linux.tar.gz
 rc=$?
 if [ "$rc" != "0" ]; then
   failure_msg="[ERROR] Couldn't download Red Hat OpenShift CLI file."
@@ -53,8 +53,8 @@ mv oc /usr/local/bin/oc
 mv kubectl /usr/local/bin/kubectl
 rm -f openshift-client-linux.tar.gz
 
-# Installing Red Hat Openshift 4.10 installer
-wget https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/stable-4.10/openshift-install-linux.tar.gz
+# Installing Red Hat Openshift 4.12 installer
+wget https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/stable-4.12/openshift-install-linux.tar.gz
 rc=$?
 if [ "$rc" != "0" ]; then
   failure_msg="[ERROR] Couldn't download Red Hat OpenShift installer file."

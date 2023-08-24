@@ -19,12 +19,12 @@ export CP_REPO_PASS=$9
 export GI_VERSION=${10}
 export GI_PRODUCTION_SIZE=${11}
 
-if [ "$GI_VERSION" == "3.2.3" ]; then
-  export CASE_VERSION="2.2.3"
-  export CASE_ARCHIVE="ibm-guardium-insights-2.2.3.tgz"
-elif [ "$GI_VERSION" == "3.2.4" ]; then
-  export CASE_VERSION="2.2.4"
-  export CASE_ARCHIVE="ibm-guardium-insights-2.2.4.tgz"
+if [ "$GI_VERSION" == "3.2.7" ]; then
+  export CASE_VERSION="2.2.7"
+  export CASE_ARCHIVE="ibm-guardium-insights-2.2.7.tgz"
+elif [ "$GI_VERSION" == "3.2.6" ]; then
+  export CASE_VERSION="2.2.6"
+  export CASE_ARCHIVE="ibm-guardium-insights-2.2.6.tgz"
 else
   echo "IBM Security Guardium Insights Version not supported. Exiting..."
   exit 1
