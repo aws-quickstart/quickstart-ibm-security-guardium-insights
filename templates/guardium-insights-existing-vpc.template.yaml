@@ -310,9 +310,9 @@ Parameters:
     Type: String
   GIVersion:
     AllowedValues:
-      - '3.2.6'
       - '3.2.7'
-    Default: '3.2.7'
+      - '3.2.8'
+    Default: '3.2.8'
     Description: Version of IBM Security Guardium Insights to be deployed.
     Type: String
   Namespace:
@@ -832,7 +832,7 @@ Resources:
             chmod +x /quickstart/bootstrap.sh
             ./quickstart/bootstrap.sh
           -
-            AMI_ID: !FindInMap [AWSAMIRegionMap, !Ref "AWS::Region", COREOS]
+            AMI_ID: !FindInMap [AWSAMIRegionMap, !Ref "AWS::Region", RHEL79HVM]
   CleanUpLambda:
     Type: AWS::Lambda::Function
     Properties:
