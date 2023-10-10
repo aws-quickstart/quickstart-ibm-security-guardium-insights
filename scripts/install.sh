@@ -18,14 +18,13 @@ export TAINT_DATA_NODE=$8
 export CP_REPO_PASS=$9
 export GI_VERSION=${10}
 export GI_PRODUCTION_SIZE=${11}
-export CASE_NAME=ibm-guardium-insights
 
-if [ "$GI_VERSION" == "3.2.8" ]; then
-  export CASE_VERSION="2.2.8"
-  export CASE_ARCHIVE="ibm-guardium-insights-2.2.8.tgz"
-elif [ "$GI_VERSION" == "3.2.7" ]; then
+if [ "$GI_VERSION" == "3.2.7" ]; then
   export CASE_VERSION="2.2.7"
   export CASE_ARCHIVE="ibm-guardium-insights-2.2.7.tgz"
+elif [ "$GI_VERSION" == "3.2.6" ]; then
+  export CASE_VERSION="2.2.6"
+  export CASE_ARCHIVE="ibm-guardium-insights-2.2.6.tgz"
 else
   echo "IBM Security Guardium Insights Version not supported. Exiting..."
   exit 1
@@ -74,12 +73,9 @@ check_exit_status
 echo "------------------------------------------------------"
 echo "DOWNLOADING AND EXTRACTING GUARDIUM INSIGHTS CASE FILE"
 echo "------------------------------------------------------"
-# cloudctl case save \
-#   --case https://github.com/IBM/cloud-pak/raw/master/repo/case/ibm-guardium-insights/${CASE_VERSION}/${CASE_ARCHIVE} \
-#   --outputdir $LOCAL_CASE_DIR --tolerance 1
-oc ibm-pak get $CASE_NAME \
---version $CASE_VERSION \
---skip-verify
+cloudctl case save \
+  --case https://github.com/IBM/cloud-pak/raw/master/repo/case/ibm-guardium-insights/${CASE_VERSION}/${CASE_ARCHIVE} \
+  --outputdir $LOCAL_CASE_DIR --tolerance 1
 # Checking exit status
 rc=$?
 success_msg="[SUCCESS] Download and extracted IBM Security Guardium Insights CASE."
@@ -99,20 +95,13 @@ check_exit_status
 echo "--------------------------------------------------"
 echo "INSTALLING CLOUD PAK FOUNDATIONAL SERVICES CATALOG"
 echo "--------------------------------------------------"
-# cloudctl case launch \
-#   --case ${LOCAL_CASE_DIR}/${CASE_ARCHIVE} \
-#   --namespace $ICS_NAMESPACE \
-#   --inventory ibmCommonServiceOperatorSetup \
-#   --action install-catalog \
-#   --tolerance 1 \
-#   --args "--registry icr.io --inputDir ${LOCAL_CASE_DIR}"
-oc ibm-pak launch $CASE_NAME \
-  --version ${CASE_VERSION} \
-  --action install-catalog \
+cloudctl case launch \
+  --case ${LOCAL_CASE_DIR}/${CASE_ARCHIVE} \
+  --namespace $ICS_NAMESPACE \
   --inventory ibmCommonServiceOperatorSetup \
-  --namespace ${ICS_NAMESPACE} \
-  --args "--registry icr.io --recursive \
-  --inputDir ${LOCAL_CASE_DIR}"
+  --action install-catalog \
+  --tolerance 1 \
+  --args "--registry icr.io --inputDir ${LOCAL_CASE_DIR}"
 # Checking exit status
 rc=$?
 if [ "$rc" != "0" ]; then
@@ -173,19 +162,13 @@ done
 echo "----------------------------------------------------"
 echo "INSTALLING CLOUD PAK FOUNDATIONAL SERVICES OPERATORS"
 echo "----------------------------------------------------"
-# cloudctl case launch \
-#   --case ${LOCAL_CASE_DIR}/${CASE_ARCHIVE} \
-#   --namespace ${ICS_NAMESPACE} \
-#   --inventory ibmCommonServiceOperatorSetup \
-#   --tolerance 1 \
-#   --action install-operator \
-#   --args "--size ${ICS_SIZE} --inputDir ${LOCAL_CASE_DIR}"
-oc ibm-pak launch $CASE_NAME \
-   --version ${CASE_VERSION} \
-   --inventory ibmCommonServiceOperatorSetup \
-   --action install-operator \
-   --namespace ${ICS_NAMESPACE} \
-   --args "--size ${ICS_SIZE} --inputDir ${LOCAL_CASE_DIR}"
+cloudctl case launch \
+  --case ${LOCAL_CASE_DIR}/${CASE_ARCHIVE} \
+  --namespace ${ICS_NAMESPACE} \
+  --inventory ibmCommonServiceOperatorSetup \
+  --tolerance 1 \
+  --action install-operator \
+  --args "--size ${ICS_SIZE} --inputDir ${LOCAL_CASE_DIR}"
 # Checking exit status
 rc=$?
 if [ "$rc" != "0" ]; then
@@ -280,20 +263,13 @@ fi
 echo "------------------------------------------------------------"
 echo "INSTALLING GUARDIUM INSIGHTS OPERATOR AND RELATED COMPONENTS"
 echo "------------------------------------------------------------"
-# cloudctl case launch    \
-#   --case ${LOCAL_CASE_DIR}/${CASE_ARCHIVE} \
-#   --namespace ${NAMESPACE} \
-#   --inventory install     \
-#   --action pre-install    \
-#   --tolerance 1 \
-#   --args "-n ${NAMESPACE} -h ${db2_data_nodes_list} -l true -t ${TAINT_DATA_NODE} -k ${INGRESS_KEYFILE} -f ${INGRESS_CERTFILE} -c ${INGRESS_CAFILE}"
-
-oc ibm-pak launch ${CASE_NAME} \
-   --version ${CASE_VERSION} \
-   --inventory install \
-   --action pre-install \
-   --namespace ${NAMESPACE} \
-   --args "-n ${NAMESPACE} -h ${db2_data_nodes_list} -l true -t ${TAINT_DATA_NODE} -k ${INGRESS_KEYFILE} -f ${INGRESS_CERTFILE} -c ${INGRESS_CAFILE}"
+cloudctl case launch    \
+  --case ${LOCAL_CASE_DIR}/${CASE_ARCHIVE} \
+  --namespace ${NAMESPACE} \
+  --inventory install     \
+  --action pre-install    \
+  --tolerance 1 \
+  --args "-n ${NAMESPACE} -h ${db2_data_nodes_list} -l true -t ${TAINT_DATA_NODE} -k ${INGRESS_KEYFILE} -f ${INGRESS_CERTFILE} -c ${INGRESS_CAFILE}"
 # Checking exit status
 rc=$?
 success_msg="[SUCCESS] Installed the Guardium Insights operator and related components."
@@ -304,19 +280,13 @@ check_exit_status
 echo "-------------------------------------"
 echo "INSTALLING GUARDIUM INSIGHTS CATALOGS"
 echo "-------------------------------------"
-# cloudctl case launch \
-#   --case ${LOCAL_CASE_DIR}/${CASE_ARCHIVE} \
-#   --namespace openshift-marketplace \
-#   --inventory install \
-#   --action install-catalog \
-#   --args "--inputDir ${LOCAL_CASE_DIR}" \
-#   --tolerance 1
-oc ibm-pak launch $CASE_NAME \
-   --version $CASE_VERSION \
-   --inventory install \
-   --action install-catalog \
-   --namespace openshift-marketplace \
-   --args "--inputDir ${LOCAL_CASE_DIR}"
+cloudctl case launch \
+  --case ${LOCAL_CASE_DIR}/${CASE_ARCHIVE} \
+  --namespace openshift-marketplace \
+  --inventory install \
+  --action install-catalog \
+  --args "--inputDir ${LOCAL_CASE_DIR}" \
+  --tolerance 1
 # Checking exit status
 rc=$?
 if [ "$rc" != "0" ]; then
@@ -357,20 +327,13 @@ done
 echo "--------------------------------------"
 echo "INSTALLING GUARDIUM INSIGHTS OPERATORS"
 echo "--------------------------------------"
-# cloudctl case launch \
-#   --case ${LOCAL_CASE_DIR}/${CASE_ARCHIVE} \
-#   --namespace ${NAMESPACE} \
-#   --inventory install \
-#   --action install-operator \
-#   --tolerance 1 \
-#   --args "--registry cp.icr.io --user ${CP_REPO_USER} --pass ${CP_REPO_PASS} --secret ibm-entitlement-key"
-
-oc ibm-pak launch ${CASE_NAME} \
-   --version ${CASE_VERSION} \
-   --inventory install \
-   --action install-operator \
-   --namespace ${NAMESPACE} \
-   --args "--registry cp.icr.io --user ${CP_REPO_USER} --pass ${CP_REPO_PASS} --secret ibm-entitlement-key --inputDir ${LOCAL_CASE_DIR}"
+cloudctl case launch \
+  --case ${LOCAL_CASE_DIR}/${CASE_ARCHIVE} \
+  --namespace ${NAMESPACE} \
+  --inventory install \
+  --action install-operator \
+  --tolerance 1 \
+  --args "--registry cp.icr.io --user ${CP_REPO_USER} --pass ${CP_REPO_PASS} --secret ibm-entitlement-key"
 # Checking exit status
 rc=$?
 if [ "$rc" != "0" ]; then

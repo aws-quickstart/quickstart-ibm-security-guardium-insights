@@ -122,30 +122,6 @@ if [ "$rc" != "0" ]; then
 fi
 chmod 755 /usr/local/bin/jq
 
-# Installing oc ibm-pak
-qs_retry_command 10 wget https://github.com/IBM/ibm-pak/releases/latest/download/oc-ibm_pak-linux-amd64.tar.gz
-rc=$?
-if [ "$rc" != "0" ]; then
-  failure_msg="[ERROR] Couldn't download oc ibm-pak."
-  cfn_init_status
-fi
-tar -xf oc-ibm_pak-linux-amd64.tar.gz
-chmod 755 oc-ibm_pak
-mv oc-ibm_pak-linux-amd64 /usr/local/bin/oc-ibm_pak
-rm -f oc-ibm_pak-linux-amd64.tar.gz
-
-# Installing casectl
-qs_retry_command 10 wget http://rchgsa.ibm.com/projects/c/cloud-prereq/casectl/latest/casectl-linux-amd64.tar.gz
-rc=$?
-if [ "$rc" != "0" ]; then
-  failure_msg="[ERROR] Couldn't download casectl."
-  cfn_init_status
-fi
-tar -xvzf casectl-linux-amd64.tar.gz
-chmod 755 casectl
-mv casectl /usr/local/bin/casectl
-rm -f casectl-linux-amd64.tar.gz
-
 # Installing yq
 wget https://github.com/mikefarah/yq/releases/download/3.4.0/yq_linux_386 -O /usr/local/bin/yq
 if [ "$rc" != "0" ]; then
