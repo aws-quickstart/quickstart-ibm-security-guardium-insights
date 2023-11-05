@@ -301,9 +301,9 @@ Parameters:
     Type: String
   GIVersion:
     AllowedValues:
-      - '3.2.3'
-      - '3.2.4'
-    Default: '3.2.4'
+      - '3.2.7'
+      - '3.2.8'
+    Default: '3.2.8'
     Description: Version of IBM Security Guardium Insights to be deployed.
     Type: String
   Namespace:
