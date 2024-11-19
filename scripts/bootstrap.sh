@@ -39,8 +39,8 @@ if [ ! -d "/usr/local/bin/" ]; then
   fi
 fi
 
-# Installing Red Hat Openshift 4.10 CLI
-qs_retry_command 10 wget https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/stable-4.10/openshift-client-linux.tar.gz
+# Installing Red Hat Openshift 4.12 CLI
+qs_retry_command 10 wget https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/stable-4.12/openshift-client-linux.tar.gz
 rc=$?
 if [ "$rc" != "0" ]; then
   failure_msg="[ERROR] Couldn't download Red Hat OpenShift CLI file."
@@ -53,8 +53,8 @@ mv oc /usr/local/bin/oc
 mv kubectl /usr/local/bin/kubectl
 rm -f openshift-client-linux.tar.gz
 
-# Installing Red Hat Openshift 4.10 installer
-wget https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/stable-4.10/openshift-install-linux.tar.gz
+# Installing Red Hat Openshift 4.12 installer
+wget https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/stable-4.12/openshift-install-linux.tar.gz
 rc=$?
 if [ "$rc" != "0" ]; then
   failure_msg="[ERROR] Couldn't download Red Hat OpenShift installer file."
@@ -121,6 +121,30 @@ if [ "$rc" != "0" ]; then
   cfn_init_status
 fi
 chmod 755 /usr/local/bin/jq
+
+# Installing oc ibm-pak
+qs_retry_command 10 wget https://github.com/IBM/ibm-pak/releases/latest/download/oc-ibm_pak-linux-amd64.tar.gz
+rc=$?
+if [ "$rc" != "0" ]; then
+  failure_msg="[ERROR] Couldn't download oc ibm-pak."
+  cfn_init_status
+fi
+tar -xf oc-ibm_pak-linux-amd64.tar.gz
+chmod 755 oc-ibm_pak
+mv oc-ibm_pak-linux-amd64 /usr/local/bin/oc-ibm_pak
+rm -f oc-ibm_pak-linux-amd64.tar.gz
+
+# Installing casectl
+qs_retry_command 10 wget http://rchgsa.ibm.com/projects/c/cloud-prereq/casectl/latest/casectl-linux-amd64.tar.gz
+rc=$?
+if [ "$rc" != "0" ]; then
+  failure_msg="[ERROR] Couldn't download casectl."
+  cfn_init_status
+fi
+tar -xvzf casectl-linux-amd64.tar.gz
+chmod 755 casectl
+mv casectl /usr/local/bin/casectl
+rm -f casectl-linux-amd64.tar.gz
 
 # Installing yq
 wget https://github.com/mikefarah/yq/releases/download/3.4.0/yq_linux_386 -O /usr/local/bin/yq
